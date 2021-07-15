@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'dart:html';
 import 'package:flutter/foundation.dart';
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:html';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:reading_experiment/screens/intro.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,65 +21,118 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    final double width = MediaQuery.of(context).size.width;
+    final double height = MediaQuery.of(context).size.height;
+
+    return Scaffold(
+      extendBody: true,
+      body: Center(
+        child: ElevatedButton(
+          child: const Text('Get Started'),
+          onPressed: () => Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => const Intro())),
+        ),
+      ),
+      bottomNavigationBar: SizedBox(
+        height: height * 0.1,
+        child: const Center(
+          child: ClickableText('Go to Admin Portal'),
+        ),
+      ),
+    );
   }
 }
 
-// class Test extends StatefulWidget {
-//   const Test({Key? key}) : super(key: key);
+class ClickableText extends StatefulWidget {
+  final String text;
 
-//   @override
-//   _TestState createState() => _TestState();
-// }
+  const ClickableText(this.text, {Key? key}) : super(key: key);
 
-// class _TestState extends State<Test> with WidgetsBindingObserver {
-//   @override
-//   void initState() {
-//     super.initState();
-//     if (kIsWeb) {
-//       window.addEventListener('visibilitychange', onVisibilityChange);
-//     } else {
-//       WidgetsBinding.instance!.addObserver(this);
-//     }
-//   }
+  @override
+  ClickableTextState createState() => ClickableTextState();
+}
 
-//   @override
-//   void dispose() {
-//     if (kIsWeb) {
-//       window.removeEventListener('visibilitychange', onVisibilityChange);
-//     } else {
-//       WidgetsBinding.instance!.removeObserver(this);
-//     }
-//     super.dispose();
-//   }
+class ClickableTextState extends State<ClickableText> {
+  Color textColor = Colors.black;
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: MouseRegion(
+        onEnter: (_) => setState(() => textColor = Colors.blue),
+        onExit: (_) => setState(() => textColor = Colors.black),
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: () => print('admin portal'),
+          child: Text(
+            widget.text,
+            style: TextStyle(
+              color: textColor,
+              decoration: TextDecoration.underline,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
 
-//   void onVisibilityChange(Event e) {
-//     String visibility = document.visibilityState;
-//     if (visibility == 'visible') {
-//       didChangeAppLifecycleState(AppLifecycleState.resumed);
-//     } else if (visibility == 'hidden') {
-//       didChangeAppLifecycleState(AppLifecycleState.paused);
-//     }
-//   }
+class Test extends StatefulWidget {
+  const Test({Key? key}) : super(key: key);
 
-//   @override
-//   void didChangeAppLifecycleState(AppLifecycleState state) {
-//     print(state);
-//     setState(() => text = 'you cheated.');
-//   }
+  @override
+  _TestState createState() => _TestState();
+}
 
-//   String text = 'Hello';
+class _TestState extends State<Test> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    if (kIsWeb) {
+      window.addEventListener('focus', onFocus);
+      window.addEventListener('blur', onBlur);
+    } else {
+      WidgetsBinding.instance!.addObserver(this);
+    }
+  }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Test'),
-//         centerTitle: true,
-//       ),
-//       body: Center(
-//         child: Text(text),
-//       ),
-//     );
-//   }
-// }
+  @override
+  void dispose() {
+    if (kIsWeb) {
+      window.removeEventListener('focus', onFocus);
+      window.removeEventListener('blur', onBlur);
+    } else {
+      WidgetsBinding.instance!.removeObserver(this);
+    }
+    super.dispose();
+  }
+
+  void onFocus(Event e) {
+    didChangeAppLifecycleState(AppLifecycleState.resumed);
+  }
+
+  void onBlur(Event e) {
+    didChangeAppLifecycleState(AppLifecycleState.paused);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print(state);
+    text = 'locked out';
+  }
+
+  String text = 'Hello';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Test'),
+        centerTitle: true,
+      ),
+      body: Center(
+        child: Text(text),
+      ),
+    );
+  }
+}
