@@ -167,9 +167,18 @@ class _AdminLoginState extends State<AdminLogin> {
                 ),
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                child: const Text('Log In'),
-                onPressed: () {},
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    child: const Text('Go Back'),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                  ElevatedButton(
+                    child: const Text('Log In'),
+                    onPressed: () {},
+                  ),
+                ],
               ),
             ],
           ),

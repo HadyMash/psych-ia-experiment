@@ -28,6 +28,13 @@ class _AgreementState extends State<Agreement> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Introduction - Agreement'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          onPressed: () async {
+            // TOOD await log out
+            Navigator.of(context).pop();
+          },
+        ),
         automaticallyImplyLeading: false,
         centerTitle: true,
       ),
