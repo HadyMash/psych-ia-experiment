@@ -1,28 +1,39 @@
 import 'package:flutter/material.dart';
 
-class Intro extends StatefulWidget {
-  const Intro({Key? key}) : super(key: key);
+class Agreement extends StatefulWidget {
+  const Agreement({Key? key}) : super(key: key);
 
   @override
-  _IntroState createState() => _IntroState();
+  _AgreementState createState() => _AgreementState();
 }
 
-class _IntroState extends State<Intro> {
+class _AgreementState extends State<Agreement> {
+  bool offstage = true;
+  bool isChecked = false;
+
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
+    Color getColor(Set<MaterialState> states) {
+      const Set<MaterialState> interactiveStates = <MaterialState>{
+        MaterialState.pressed,
+        MaterialState.hovered,
+        MaterialState.focused,
+      };
+      if (states.any(interactiveStates.contains)) {
+        return Colors.blue;
+      }
+      return Colors.blue;
+    }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Introduction'),
+        title: const Text('Introduction - Agreement'),
         automaticallyImplyLeading: false,
         centerTitle: true,
       ),
       body: Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-              vertical: height * 0.1, horizontal: width * 0.2),
+        child: SizedBox(
+          width: 250,
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.max,
@@ -33,9 +44,10 @@ class _IntroState extends State<Intro> {
                   style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
                   textAlign: TextAlign.left,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 const Text(
                   '[insert cheating text]',
+                  style: TextStyle(height: 1.5),
                   textAlign: TextAlign.left,
                 ),
                 const SizedBox(height: 20),
@@ -44,22 +56,148 @@ class _IntroState extends State<Intro> {
                   style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
                   textAlign: TextAlign.left,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 const Text(
                   '[insert anonymity text]',
+                  style: TextStyle(height: 1.5),
+                  textAlign: TextAlign.left,
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Use of Data',
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
+                  textAlign: TextAlign.left,
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  '[insert use of data text]',
+                  style: TextStyle(height: 1.5),
                   textAlign: TextAlign.left,
                 ),
                 const SizedBox(height: 20),
                 Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Text('I agree bla bla bla'),
-                    SizedBox(width: 50),
-                    Placeholder(
-                      fallbackHeight: 10,
-                      fallbackWidth: 10,
-                    )
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('I agree bla bla bla'),
+                    Checkbox(
+                      checkColor: Colors.white,
+                      fillColor: MaterialStateProperty.resolveWith(getColor),
+                      value: isChecked,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          isChecked = value!;
+                          offstage = !value;
+                        });
+                      },
+                    ),
                   ],
+                ),
+                Offstage(offstage: offstage, child: const SizedBox(height: 20)),
+                Offstage(
+                  offstage: offstage,
+                  child: Center(
+                    child: ElevatedButton(
+                      child: const Text('Next'),
+                      onPressed: () => Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                              builder: (context) => const Explanation())),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class Explanation extends StatelessWidget {
+  const Explanation({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Introduction - Explanation'),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+      ),
+      body: Center(
+        child: SizedBox(
+          width: 250,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'The Experiment',
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
+                  textAlign: TextAlign.left,
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  '[insert text about the explanation of the experiment]',
+                  style: TextStyle(height: 1.5),
+                  textAlign: TextAlign.left,
+                ),
+                const SizedBox(height: 20),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                            builder: (context) => const AreYouReady())),
+                    child: const Text('Next'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AreYouReady extends StatelessWidget {
+  const AreYouReady({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Introduction - Explanation'),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+      ),
+      body: Center(
+        child: SizedBox(
+          width: 250,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Are You Ready?',
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
+                  textAlign: TextAlign.left,
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Once you press \'Start\' the experiment will begin. You will not be able to pause once started. The experiment should take about [insert time here] minutes. You will have [insert time] minutes for each text and as long as you\'d like to answer each text. There are 3 texts in total. Good luck!',
+                  style: TextStyle(height: 1.5),
+                  textAlign: TextAlign.left,
+                ),
+                const SizedBox(height: 20),
+                Center(
+                  child: ElevatedButton(
+                    child: const Text('Start'),
+                    onPressed: () {},
+                  ),
                 ),
               ],
             ),

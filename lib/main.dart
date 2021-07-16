@@ -29,7 +29,7 @@ class Home extends StatelessWidget {
         child: ElevatedButton(
           child: const Text('Get Started'),
           onPressed: () => Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => const Intro())),
+              .push(MaterialPageRoute(builder: (context) => const Agreement())),
         ),
       ),
       bottomNavigationBar: SizedBox(
