@@ -169,7 +169,7 @@ class AreYouReady extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Introduction - Explanation'),
+        title: const Text('Ready to Start'),
         automaticallyImplyLeading: false,
         centerTitle: true,
       ),
