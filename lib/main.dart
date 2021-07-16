@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:reading_experiment/screens/admin_login.dart';
 import 'package:reading_experiment/screens/intro.dart';
 
 void main() async {
@@ -62,7 +63,8 @@ class ClickableTextState extends State<ClickableText> {
         onExit: (_) => setState(() => textColor = Colors.black),
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
-          onTap: () => print('admin portal'),
+          onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const AdminLogin())),
           child: Text(
             widget.text,
             style: TextStyle(
