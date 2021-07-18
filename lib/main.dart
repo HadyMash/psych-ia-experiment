@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'dart:html';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:reading_experiment/screens/admin/admin_login.dart';
-import 'package:reading_experiment/screens/intro.dart';
+import 'package:reading_experiment/screens/experiment/intro.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
