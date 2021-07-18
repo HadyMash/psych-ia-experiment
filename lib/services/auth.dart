@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -30,25 +29,13 @@ class AuthService {
     }
   }
 
-  Future deleteUser(context) async {
+  // TODO make a function to delete a user and their data
+  Future deleteUserData() async {}
+
+  Future deleteUser() async {
     try {
-      // TODO delete user data on early exit.
       await _auth.currentUser!.delete();
     } catch (e) {
-      print(e);
-      final snackBar = SnackBar(
-        content: Row(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5),
-              child: Icon(Icons.error_rounded, color: Colors.red[700]),
-            ),
-            Expanded(child: Text(getError(e.toString()))),
-          ],
-        ),
-      );
-
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return e;
     }
   }
