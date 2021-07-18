@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:reading_experiment/screens/admin_login.dart';
+import 'package:reading_experiment/screens/admin/admin_login.dart';
 import 'package:reading_experiment/screens/intro.dart';
 
 void main() async {

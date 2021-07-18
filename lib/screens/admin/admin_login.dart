@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:reading_experiment/screens/admin/dashboard.dart';
+import 'package:reading_experiment/services/auth.dart';
 import 'package:reading_experiment/shared/custom_widget_border.dart';
 
 class AdminLogin extends StatefulWidget {
@@ -176,7 +179,31 @@ class _AdminLoginState extends State<AdminLogin> {
                   ),
                   ElevatedButton(
                     child: const Text('Log In'),
-                    onPressed: () {},
+                    onPressed: () async {
+                      // AuthService _auth = AuthService();
+                      // dynamic result =
+                      //     await _auth.logIn(email: email, password: password);
+                      // if (result is User) {
+                      //   Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Dashboard()));
+                      // } else {
+                      //   final snackBar = SnackBar(
+                      //     content: Row(
+                      //       children: [
+                      //         Padding(
+                      //           padding: EdgeInsets.symmetric(horizontal: 5),
+                      //           child: Icon(Icons.error_rounded,
+                      //               color: Colors.red[700]),
+                      //         ),
+                      //         Expanded(
+                      //             child:
+                      //                 Text(_auth.getError(result.toString()))),
+                      //       ],
+                      //     ),
+                      //   );
+
+                      //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      // }
+                    },
                   ),
                 ],
               ),
