@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:reading_experiment/services/auth.dart';
 
 class Agreement extends StatefulWidget {
-  const Agreement({Key? key}) : super(key: key);
+  final String uid;
+  const Agreement({required this.uid, Key? key}) : super(key: key);
 
   @override
   _AgreementState createState() => _AgreementState();
@@ -31,10 +33,31 @@ class _AgreementState extends State<Agreement> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () async {
-            // TOOD await log out
+            await AuthService().deleteUser();
             Navigator.of(context).pop();
           },
         ),
+        actions: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 15),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('ID: '),
+                  Theme(
+                    data: ThemeData(
+                      textSelectionTheme: TextSelectionThemeData(
+                        selectionColor: Colors.amber[700],
+                      ),
+                    ),
+                    child: const SelectableText('UEdZmw5sZkWtRay9Gkj6FNCljjn1'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
         automaticallyImplyLeading: false,
         centerTitle: true,
       ),
@@ -129,6 +152,34 @@ class Explanation extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Introduction - Explanation'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          onPressed: () async {
+            await AuthService().deleteUser();
+            Navigator.of(context).pop();
+          },
+        ),
+        actions: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 15),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('ID: '),
+                  Theme(
+                    data: ThemeData(
+                      textSelectionTheme: TextSelectionThemeData(
+                        selectionColor: Colors.amber[700],
+                      ),
+                    ),
+                    child: const SelectableText('UEdZmw5sZkWtRay9Gkj6FNCljjn1'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
         automaticallyImplyLeading: false,
         centerTitle: true,
       ),
@@ -177,6 +228,34 @@ class AreYouReady extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ready to Start'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          onPressed: () async {
+            await AuthService().deleteUser();
+            Navigator.of(context).pop();
+          },
+        ),
+        actions: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 15),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('ID: '),
+                  Theme(
+                    data: ThemeData(
+                      textSelectionTheme: TextSelectionThemeData(
+                        selectionColor: Colors.amber[700],
+                      ),
+                    ),
+                    child: const SelectableText('UEdZmw5sZkWtRay9Gkj6FNCljjn1'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
         automaticallyImplyLeading: false,
         centerTitle: true,
       ),

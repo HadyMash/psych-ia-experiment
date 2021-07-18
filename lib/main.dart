@@ -1,10 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:reading_experiment/screens/admin/admin_login.dart';
 import 'package:reading_experiment/screens/experiment/intro.dart';
+import 'package:reading_experiment/services/auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,8 +20,55 @@ void main() async {
   );
 }
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
+
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  late FToast fToast;
+
+  @override
+  void initState() {
+    super.initState();
+    fToast = FToast();
+    fToast.init(context);
+  }
+
+  _showToast(String text) {
+    Widget toast = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        color: Colors.grey[850],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.7),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.error_rounded, color: Colors.red[700]),
+          const SizedBox(
+            width: 12.0,
+          ),
+          Text(text.toString(), style: const TextStyle(color: Colors.white)),
+        ],
+      ),
+    );
+
+    fToast.showToast(
+      child: toast,
+      gravity: ToastGravity.BOTTOM,
+      toastDuration: const Duration(seconds: 6),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +79,22 @@ class Home extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           child: const Text('Get Started'),
-          onPressed: () => Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => const Agreement())),
+          onPressed: () async {
+            final AuthService _auth = AuthService();
+            dynamic currentUser = _auth.getUser();
+            if (currentUser == null) {
+              await _auth.deleteUserData();
+              await _auth.deleteUser();
+            }
+
+            dynamic result = await _auth.logInAnonymously();
+            if (result is User) {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => Agreement(uid: result.uid.toString())));
+            } else {
+              _showToast(_auth.getError(result.toString()));
+            }
+          },
         ),
       ),
       bottomNavigationBar: SizedBox(
