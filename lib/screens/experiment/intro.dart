@@ -1,5 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:reading_experiment/services/auth.dart';
+
+void _showToast(BuildContext context) {
+  late FToast fToast;
+  fToast = FToast();
+  fToast.init(context);
+
+  Widget toast = Container(
+    padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(10.0),
+      color: Colors.grey[850],
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.7),
+          blurRadius: 10,
+          offset: const Offset(0, 3),
+        ),
+      ],
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.check_circle_rounded, color: Colors.green[700]),
+        const SizedBox(
+          width: 12.0,
+        ),
+        const Text(
+          'Copied to Clipboard',
+          style: TextStyle(color: Colors.white),
+        ),
+      ],
+    ),
+  );
+
+  fToast.showToast(
+    child: toast,
+    gravity: ToastGravity.BOTTOM,
+    toastDuration: const Duration(seconds: 3),
+  );
+}
 
 class Agreement extends StatefulWidget {
   final String uid;
@@ -51,7 +93,15 @@ class _AgreementState extends State<Agreement> {
                         selectionColor: Colors.amber[700],
                       ),
                     ),
-                    child: const SelectableText('UEdZmw5sZkWtRay9Gkj6FNCljjn1'),
+                    child: SelectableText(widget.uid),
+                  ),
+                  const SizedBox(width: 5),
+                  IconButton(
+                    icon: const Icon(Icons.copy),
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: widget.uid));
+                      _showToast(context);
+                    },
                   ),
                 ],
               ),
@@ -131,7 +181,8 @@ class _AgreementState extends State<Agreement> {
                       child: const Text('Next'),
                       onPressed: () => Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                              builder: (context) => const Explanation())),
+                              builder: (context) =>
+                                  Explanation(uid: widget.uid))),
                     ),
                   ),
                 ),
@@ -145,7 +196,8 @@ class _AgreementState extends State<Agreement> {
 }
 
 class Explanation extends StatelessWidget {
-  const Explanation({Key? key}) : super(key: key);
+  final String uid;
+  const Explanation({required this.uid, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -173,7 +225,15 @@ class Explanation extends StatelessWidget {
                         selectionColor: Colors.amber[700],
                       ),
                     ),
-                    child: const SelectableText('UEdZmw5sZkWtRay9Gkj6FNCljjn1'),
+                    child: SelectableText(uid),
+                  ),
+                  const SizedBox(width: 5),
+                  IconButton(
+                    icon: const Icon(Icons.copy),
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: uid));
+                      _showToast(context);
+                    },
                   ),
                 ],
               ),
@@ -207,7 +267,7 @@ class Explanation extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () => Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                            builder: (context) => const AreYouReady())),
+                            builder: (context) => AreYouReady(uid: uid))),
                     child: const Text('Next'),
                   ),
                 ),
@@ -221,7 +281,8 @@ class Explanation extends StatelessWidget {
 }
 
 class AreYouReady extends StatelessWidget {
-  const AreYouReady({Key? key}) : super(key: key);
+  final String uid;
+  const AreYouReady({required this.uid, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -249,7 +310,15 @@ class AreYouReady extends StatelessWidget {
                         selectionColor: Colors.amber[700],
                       ),
                     ),
-                    child: const SelectableText('UEdZmw5sZkWtRay9Gkj6FNCljjn1'),
+                    child: SelectableText(uid),
+                  ),
+                  const SizedBox(width: 5),
+                  IconButton(
+                    icon: const Icon(Icons.copy),
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: uid));
+                      _showToast(context);
+                    },
                   ),
                 ],
               ),
