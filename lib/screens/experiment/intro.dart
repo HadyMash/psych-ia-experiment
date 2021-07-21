@@ -38,7 +38,7 @@ void _showToast(BuildContext context) {
 
   fToast.showToast(
     child: toast,
-    gravity: ToastGravity.BOTTOM,
+    gravity: ToastGravity.TOP,
     toastDuration: const Duration(seconds: 3),
   );
 }
