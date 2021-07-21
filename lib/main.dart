@@ -79,22 +79,24 @@ class _HomeState extends State<Home> {
       body: Center(
         child: ElevatedButton(
           child: const Text('Get Started'),
-          onPressed: () async {
-            final AuthService _auth = AuthService();
-            dynamic currentUser = _auth.getUser();
-            if (currentUser == null) {
-              await _auth.deleteUserData();
-              await _auth.deleteUser();
-            }
+          onPressed: () => Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => const Test())),
+          // onPressed: () async {
+          //   final AuthService _auth = AuthService();
+          //   dynamic currentUser = _auth.getUser();
+          //   if (currentUser == null) {
+          //     await _auth.deleteUserData();
+          //     await _auth.deleteUser();
+          //   }
 
-            dynamic result = await _auth.logInAnonymously();
-            if (result is User) {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => Agreement(uid: result.uid.toString())));
-            } else {
-              _showToast(_auth.getError(result.toString()));
-            }
-          },
+          //   dynamic result = await _auth.logInAnonymously();
+          //   if (result is User) {
+          //     Navigator.of(context).push(MaterialPageRoute(
+          //         builder: (context) => Agreement(uid: result.uid.toString())));
+          //   } else {
+          //     _showToast(_auth.getError(result.toString()));
+          //   }
+          // },
         ),
       ),
       bottomNavigationBar: SizedBox(
@@ -150,6 +152,8 @@ class Test extends StatefulWidget {
 }
 
 class _TestState extends State<Test> with WidgetsBindingObserver {
+  bool active = true;
+
   @override
   void initState() {
     super.initState();
@@ -163,6 +167,7 @@ class _TestState extends State<Test> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    active = false;
     if (kIsWeb) {
       window.removeEventListener('focus', onFocus);
       window.removeEventListener('blur', onBlur);
@@ -173,11 +178,15 @@ class _TestState extends State<Test> with WidgetsBindingObserver {
   }
 
   void onFocus(Event e) {
-    didChangeAppLifecycleState(AppLifecycleState.resumed);
+    if (active) {
+      didChangeAppLifecycleState(AppLifecycleState.resumed);
+    }
   }
 
   void onBlur(Event e) {
-    didChangeAppLifecycleState(AppLifecycleState.paused);
+    if (active) {
+      didChangeAppLifecycleState(AppLifecycleState.paused);
+    }
   }
 
   @override
