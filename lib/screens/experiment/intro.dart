@@ -112,81 +112,84 @@ class _AgreementState extends State<Agreement> {
         centerTitle: true,
       ),
       body: Center(
-        child: SizedBox(
-          width: 250,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Cheating',
-                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
-                  textAlign: TextAlign.left,
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  '[insert cheating text]',
-                  style: TextStyle(height: 1.5),
-                  textAlign: TextAlign.left,
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Anonymity',
-                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
-                  textAlign: TextAlign.left,
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  '[insert anonymity text]',
-                  style: TextStyle(height: 1.5),
-                  textAlign: TextAlign.left,
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Use of Data',
-                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
-                  textAlign: TextAlign.left,
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  '[insert use of data text]',
-                  style: TextStyle(height: 1.5),
-                  textAlign: TextAlign.left,
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('I agree bla bla bla'),
-                    Checkbox(
-                      checkColor: Colors.white,
-                      fillColor: MaterialStateProperty.resolveWith(getColor),
-                      value: isChecked,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          isChecked = value!;
-                          offstage = !value;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                Offstage(offstage: offstage, child: const SizedBox(height: 20)),
-                Offstage(
-                  offstage: offstage,
-                  child: Center(
-                    child: ElevatedButton(
-                      child: const Text('Next'),
-                      onPressed: () => Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  Explanation(uid: widget.uid))),
+        child: SingleChildScrollView(
+          child: Center(
+            child: SizedBox(
+              width: 250,
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Cheating',
+                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
+                    textAlign: TextAlign.left,
+                  ),
+                  const SizedBox(height: 10),
+                  const Text(
+                    '[insert cheating text]',
+                    style: TextStyle(height: 1.5),
+                    textAlign: TextAlign.left,
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Anonymity',
+                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
+                    textAlign: TextAlign.left,
+                  ),
+                  const SizedBox(height: 10),
+                  const Text(
+                    '[insert anonymity text]',
+                    style: TextStyle(height: 1.5),
+                    textAlign: TextAlign.left,
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Use of Data',
+                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
+                    textAlign: TextAlign.left,
+                  ),
+                  const SizedBox(height: 10),
+                  const Text(
+                    '[insert use of data text]',
+                    style: TextStyle(height: 1.5),
+                    textAlign: TextAlign.left,
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('I agree bla bla bla'),
+                      Checkbox(
+                        checkColor: Colors.white,
+                        fillColor: MaterialStateProperty.resolveWith(getColor),
+                        value: isChecked,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            isChecked = value!;
+                            offstage = !value;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  Offstage(
+                      offstage: offstage, child: const SizedBox(height: 20)),
+                  Offstage(
+                    offstage: offstage,
+                    child: Center(
+                      child: ElevatedButton(
+                        child: const Text('Next'),
+                        onPressed: () => Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    Explanation(uid: widget.uid))),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
