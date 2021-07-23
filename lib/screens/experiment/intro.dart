@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:reading_experiment/screens/experiment/experiment.dart';
 import 'package:reading_experiment/services/auth.dart';
 
 void _showToast(BuildContext context) {
@@ -354,7 +355,11 @@ class AreYouReady extends StatelessWidget {
                 Center(
                   child: ElevatedButton(
                     child: const Text('Start'),
-                    onPressed: () {},
+                    onPressed: () async {
+                      // TODO Create a new session
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => FirstText(uid: uid)));
+                    },
                   ),
                 ),
               ],

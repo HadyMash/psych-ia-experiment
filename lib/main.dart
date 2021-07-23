@@ -6,6 +6,7 @@ import 'dart:html';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:reading_experiment/screens/admin/admin_login.dart';
+import 'package:reading_experiment/screens/experiment/cheat_popup.dart';
 import 'package:reading_experiment/screens/experiment/intro.dart';
 import 'package:reading_experiment/services/auth.dart';
 
@@ -79,24 +80,22 @@ class _HomeState extends State<Home> {
       body: Center(
         child: ElevatedButton(
           child: const Text('Get Started'),
-          onPressed: () => Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => const Test())),
-          // onPressed: () async {
-          //   final AuthService _auth = AuthService();
-          //   dynamic currentUser = _auth.getUser();
-          //   if (currentUser == null) {
-          //     await _auth.deleteUserData();
-          //     await _auth.deleteUser();
-          //   }
+          onPressed: () async {
+            final AuthService _auth = AuthService();
+            dynamic currentUser = _auth.getUser();
+            if (currentUser == null) {
+              await _auth.deleteUserData();
+              await _auth.deleteUser();
+            }
 
-          //   dynamic result = await _auth.logInAnonymously();
-          //   if (result is User) {
-          //     Navigator.of(context).push(MaterialPageRoute(
-          //         builder: (context) => Agreement(uid: result.uid.toString())));
-          //   } else {
-          //     _showToast(_auth.getError(result.toString()));
-          //   }
-          // },
+            dynamic result = await _auth.logInAnonymously();
+            if (result is User) {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => Agreement(uid: result.uid.toString())));
+            } else {
+              _showToast(_auth.getError(result.toString()));
+            }
+          },
         ),
       ),
       bottomNavigationBar: SizedBox(

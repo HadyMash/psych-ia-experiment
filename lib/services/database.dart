@@ -7,4 +7,12 @@ class DatabaseService {
 
   final CollectionReference textCollection =
       FirebaseFirestore.instance.collection('texts');
+
+  // TODO add user consent to database
+
+  // TODO create user session
+
+  // TODO get text
+
+  // TODO add answer to text
 }
