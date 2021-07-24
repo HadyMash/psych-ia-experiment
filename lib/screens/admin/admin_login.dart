@@ -180,29 +180,31 @@ class _AdminLoginState extends State<AdminLogin> {
                   ElevatedButton(
                     child: const Text('Log In'),
                     onPressed: () async {
-                      // AuthService _auth = AuthService();
-                      // dynamic result =
-                      //     await _auth.logIn(email: email, password: password);
-                      // if (result is User) {
-                      //   Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Dashboard()));
-                      // } else {
-                      //   final snackBar = SnackBar(
-                      //     content: Row(
-                      //       children: [
-                      //         Padding(
-                      //           padding: EdgeInsets.symmetric(horizontal: 5),
-                      //           child: Icon(Icons.error_rounded,
-                      //               color: Colors.red[700]),
-                      //         ),
-                      //         Expanded(
-                      //             child:
-                      //                 Text(_auth.getError(result.toString()))),
-                      //       ],
-                      //     ),
-                      //   );
+                      AuthService _auth = AuthService();
+                      dynamic result =
+                          await _auth.logIn(email: email, password: password);
+                      if (result is User) {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const Dashboard()));
+                      } else {
+                        final snackBar = SnackBar(
+                          content: Row(
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 5),
+                                child: Icon(Icons.error_rounded,
+                                    color: Colors.red[700]),
+                              ),
+                              Expanded(
+                                  child:
+                                      Text(_auth.getError(result.toString()))),
+                            ],
+                          ),
+                        );
 
-                      //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      // }
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      }
                     },
                   ),
                 ],

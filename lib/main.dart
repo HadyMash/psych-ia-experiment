@@ -6,6 +6,7 @@ import 'dart:html';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:reading_experiment/screens/admin/admin_login.dart';
+import 'package:reading_experiment/screens/admin/dashboard.dart';
 import 'package:reading_experiment/screens/experiment/cheat_popup.dart';
 import 'package:reading_experiment/screens/experiment/intro.dart';
 import 'package:reading_experiment/services/auth.dart';
@@ -16,7 +17,7 @@ void main() async {
 
   runApp(
     const MaterialApp(
-      home: Home(),
+      home: Dashboard(),
     ),
   );
 }
