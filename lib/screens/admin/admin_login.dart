@@ -1,8 +1,46 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:reading_experiment/screens/admin/dashboard.dart';
 import 'package:reading_experiment/services/auth.dart';
 import 'package:reading_experiment/shared/custom_widget_border.dart';
+
+void _showToast(BuildContext context, {required String text}) {
+  late FToast fToast;
+  fToast = FToast();
+  fToast.init(context);
+
+  Widget toast = Container(
+    padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(10.0),
+      color: Colors.grey[850],
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.7),
+          blurRadius: 10,
+          offset: const Offset(0, 3),
+        ),
+      ],
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.error_rounded, color: Colors.red[700]),
+        const SizedBox(
+          width: 12.0,
+        ),
+        Text(text.toString(), style: const TextStyle(color: Colors.white)),
+      ],
+    ),
+  );
+
+  fToast.showToast(
+    child: toast,
+    gravity: ToastGravity.BOTTOM,
+    toastDuration: const Duration(seconds: 6),
+  );
+}
 
 class AdminLogin extends StatefulWidget {
   const AdminLogin({Key? key}) : super(key: key);
@@ -187,23 +225,8 @@ class _AdminLoginState extends State<AdminLogin> {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => const Dashboard()));
                       } else {
-                        final snackBar = SnackBar(
-                          content: Row(
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 5),
-                                child: Icon(Icons.error_rounded,
-                                    color: Colors.red[700]),
-                              ),
-                              Expanded(
-                                  child:
-                                      Text(_auth.getError(result.toString()))),
-                            ],
-                          ),
-                        );
-
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        _showToast(context,
+                            text: _auth.getError(result.toString()));
                       }
                     },
                   ),

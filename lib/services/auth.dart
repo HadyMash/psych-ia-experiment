@@ -31,9 +31,10 @@ class AuthService {
     }
   }
 
-  Future logOut() async {
+  Future adminLogOut() async {
     try {
-      return await _auth.signOut();
+      await _auth.signOut();
+      return null;
     } catch (e) {
       return e.toString();
     }
