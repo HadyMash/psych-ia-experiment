@@ -6,6 +6,7 @@ import 'dart:html';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:reading_experiment/screens/admin/admin_login.dart';
+import 'package:reading_experiment/screens/admin/admin_panel.dart';
 import 'package:reading_experiment/screens/experiment/intro.dart';
 import 'package:reading_experiment/services/auth.dart';
 
@@ -28,16 +29,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late FToast fToast;
+  _showToast(BuildContext context, {required String text}) {
+    late FToast fToast;
 
-  @override
-  void initState() {
-    super.initState();
     fToast = FToast();
     fToast.init(context);
-  }
 
-  _showToast(String text) {
     Widget toast = Container(
       padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
       decoration: BoxDecoration(
@@ -71,8 +68,42 @@ class _HomeState extends State<Home> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      final User? user = AuthService().getUser();
+
+      if (user != null) {
+        if (user.isAnonymous) {
+          // go to experiment
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => Agreement(uid: user.uid)));
+        } else {
+          // go to admin panel
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const AdminPanel()));
+        }
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
+
+    // final User? user = AuthService().getUser();
+
+    // if (user != null) {
+    //   if (user.isAnonymous) {
+    //     // go to experiment
+    //     Navigator.of(context).push(MaterialPageRoute(
+    //         builder: (context) => AreYouReady(uid: user.uid)));
+    //   } else {
+    //     // go to admin panel
+    //     Navigator.of(context)
+    //         .push(MaterialPageRoute(builder: (context) => const Dashboard()));
+    //   }
+    // }
 
     return Scaffold(
       extendBody: true,
@@ -92,7 +123,7 @@ class _HomeState extends State<Home> {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => Agreement(uid: result.uid.toString())));
             } else {
-              _showToast(_auth.getError(result.toString()));
+              _showToast(context, text: _auth.getError(result.toString()));
             }
           },
         ),
