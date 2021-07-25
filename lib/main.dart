@@ -91,20 +91,6 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
 
-    // final User? user = AuthService().getUser();
-
-    // if (user != null) {
-    //   if (user.isAnonymous) {
-    //     // go to experiment
-    //     Navigator.of(context).push(MaterialPageRoute(
-    //         builder: (context) => AreYouReady(uid: user.uid)));
-    //   } else {
-    //     // go to admin panel
-    //     Navigator.of(context)
-    //         .push(MaterialPageRoute(builder: (context) => const Dashboard()));
-    //   }
-    // }
-
     return Scaffold(
       extendBody: true,
       body: Center(

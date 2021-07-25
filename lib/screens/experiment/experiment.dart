@@ -57,45 +57,143 @@ class _TimeIsUpState extends State<TimeIsUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(''),
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        actions: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 15),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('ID: '),
-                  Theme(
-                    data: ThemeData(
-                      textSelectionTheme: TextSelectionThemeData(
-                        selectionColor: Colors.amber[700],
-                      ),
-                    ),
-                    child: SelectableText(widget.uid),
-                  ),
-                  const SizedBox(width: 5),
-                  IconButton(
-                    icon: const Icon(Icons.copy),
-                    onPressed: () {
-                      Clipboard.setData(ClipboardData(text: widget.uid));
-                      _showToast(context);
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+      appBar: ExperimentAppBar(
+        title: 'First Text',
+        uid: widget.uid,
+        onTimeFinish: () {},
       ),
       body: Center(
         child: SingleChildScrollView(
           child: Center(),
         ),
       ),
+    );
+  }
+}
+
+class ExperimentAppBar extends StatefulWidget implements PreferredSizeWidget {
+  final String title;
+  final String uid;
+  final void Function() onTimeFinish;
+  final Duration? duration;
+  const ExperimentAppBar({
+    Key? key,
+    required this.title,
+    required this.uid,
+    required this.onTimeFinish,
+    this.duration,
+  }) : super(key: key);
+
+  @override
+  _ExperimentAppBarState createState() => _ExperimentAppBarState();
+
+  @override
+  Size get preferredSize => const Size.fromHeight(56.0);
+}
+
+class _ExperimentAppBarState extends State<ExperimentAppBar>
+    with SingleTickerProviderStateMixin {
+  late AnimationController controller;
+
+  String get timerString {
+    if (controller.duration != null) {
+      Duration duration = controller.duration! * controller.value;
+      return '${((controller.duration!.inSeconds - duration.inSeconds) ~/ 60)}:${((controller.duration!.inSeconds - duration.inSeconds) % 60).toString().padLeft(2, '0')}';
+    } else {
+      return '_:__';
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    controller = AnimationController(
+      vsync: this,
+      duration: widget.duration ?? const Duration(minutes: 3),
+    );
+
+    controller.addStatusListener(
+      (AnimationStatus status) {
+        if (status == AnimationStatus.completed) {
+          widget.onTimeFinish();
+        }
+      },
+    );
+
+    controller.forward();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final double width = MediaQuery.of(context).size.width;
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, _) {
+        return AppBar(
+          title: Text(widget.title),
+          centerTitle: true,
+          automaticallyImplyLeading: false,
+          leadingWidth: 80,
+          leading: Center(
+            child: Text(
+              timerString,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+              ),
+            ),
+          ),
+          actions: [
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 15),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('ID: '),
+                    Theme(
+                      data: ThemeData(
+                        textSelectionTheme: TextSelectionThemeData(
+                          selectionColor: Colors.amber[700],
+                        ),
+                      ),
+                      child: SelectableText(widget.uid),
+                    ),
+                    const SizedBox(width: 5),
+                    IconButton(
+                      icon: const Icon(Icons.copy),
+                      onPressed: () {
+                        Clipboard.setData(ClipboardData(text: widget.uid));
+                        _showToast(context);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(6.0),
+            child: SizedBox(
+              width: width,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  color: Colors.amber[700],
+                  height: 6.0,
+                  width: width * controller.value,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -154,39 +252,10 @@ class FirstTextState extends State<FirstText> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(''),
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        actions: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 15),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('ID: '),
-                  Theme(
-                    data: ThemeData(
-                      textSelectionTheme: TextSelectionThemeData(
-                        selectionColor: Colors.amber[700],
-                      ),
-                    ),
-                    child: SelectableText(widget.uid),
-                  ),
-                  const SizedBox(width: 5),
-                  IconButton(
-                    icon: const Icon(Icons.copy),
-                    onPressed: () {
-                      Clipboard.setData(ClipboardData(text: widget.uid));
-                      _showToast(context);
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+      appBar: ExperimentAppBar(
+        title: 'First Text',
+        uid: widget.uid,
+        onTimeFinish: () {},
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -251,39 +320,10 @@ class _FirstQuizState extends State<FirstQuiz> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(''),
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        actions: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 15),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('ID: '),
-                  Theme(
-                    data: ThemeData(
-                      textSelectionTheme: TextSelectionThemeData(
-                        selectionColor: Colors.amber[700],
-                      ),
-                    ),
-                    child: SelectableText(widget.uid),
-                  ),
-                  const SizedBox(width: 5),
-                  IconButton(
-                    icon: const Icon(Icons.copy),
-                    onPressed: () {
-                      Clipboard.setData(ClipboardData(text: widget.uid));
-                      _showToast(context);
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+      appBar: ExperimentAppBar(
+        title: 'First Text',
+        uid: widget.uid,
+        onTimeFinish: () {},
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -348,39 +388,10 @@ class _SecondTextState extends State<SecondText> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(''),
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        actions: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 15),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('ID: '),
-                  Theme(
-                    data: ThemeData(
-                      textSelectionTheme: TextSelectionThemeData(
-                        selectionColor: Colors.amber[700],
-                      ),
-                    ),
-                    child: SelectableText(widget.uid),
-                  ),
-                  const SizedBox(width: 5),
-                  IconButton(
-                    icon: const Icon(Icons.copy),
-                    onPressed: () {
-                      Clipboard.setData(ClipboardData(text: widget.uid));
-                      _showToast(context);
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+      appBar: ExperimentAppBar(
+        title: 'First Text',
+        uid: widget.uid,
+        onTimeFinish: () {},
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -445,39 +456,10 @@ class _SecondQuizState extends State<SecondQuiz> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(''),
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        actions: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 15),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('ID: '),
-                  Theme(
-                    data: ThemeData(
-                      textSelectionTheme: TextSelectionThemeData(
-                        selectionColor: Colors.amber[700],
-                      ),
-                    ),
-                    child: SelectableText(widget.uid),
-                  ),
-                  const SizedBox(width: 5),
-                  IconButton(
-                    icon: const Icon(Icons.copy),
-                    onPressed: () {
-                      Clipboard.setData(ClipboardData(text: widget.uid));
-                      _showToast(context);
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+      appBar: ExperimentAppBar(
+        title: 'First Text',
+        uid: widget.uid,
+        onTimeFinish: () {},
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -542,39 +524,10 @@ class _ThirdTextState extends State<ThirdText> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(''),
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        actions: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 15),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('ID: '),
-                  Theme(
-                    data: ThemeData(
-                      textSelectionTheme: TextSelectionThemeData(
-                        selectionColor: Colors.amber[700],
-                      ),
-                    ),
-                    child: SelectableText(widget.uid),
-                  ),
-                  const SizedBox(width: 5),
-                  IconButton(
-                    icon: const Icon(Icons.copy),
-                    onPressed: () {
-                      Clipboard.setData(ClipboardData(text: widget.uid));
-                      _showToast(context);
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+      appBar: ExperimentAppBar(
+        title: 'First Text',
+        uid: widget.uid,
+        onTimeFinish: () {},
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -639,39 +592,10 @@ class _ThirdQuizState extends State<ThirdQuiz> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(''),
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        actions: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 15),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('ID: '),
-                  Theme(
-                    data: ThemeData(
-                      textSelectionTheme: TextSelectionThemeData(
-                        selectionColor: Colors.amber[700],
-                      ),
-                    ),
-                    child: SelectableText(widget.uid),
-                  ),
-                  const SizedBox(width: 5),
-                  IconButton(
-                    icon: const Icon(Icons.copy),
-                    onPressed: () {
-                      Clipboard.setData(ClipboardData(text: widget.uid));
-                      _showToast(context);
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+      appBar: ExperimentAppBar(
+        title: 'First Text',
+        uid: widget.uid,
+        onTimeFinish: () {},
       ),
       body: Center(
         child: SingleChildScrollView(
