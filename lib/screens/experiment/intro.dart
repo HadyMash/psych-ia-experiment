@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:reading_experiment/screens/experiment/experiment.dart';
 import 'package:reading_experiment/services/auth.dart';
+import 'package:reading_experiment/services/database.dart';
 
 void _showToast(BuildContext context) {
   late FToast fToast;
@@ -76,8 +77,7 @@ class _AgreementState extends State<Agreement> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () async {
-            await AuthService().deleteUser();
-            Navigator.of(context).pop();
+            _popExperiment(context);
           },
         ),
         actions: [
@@ -182,10 +182,17 @@ class _AgreementState extends State<Agreement> {
                     child: Center(
                       child: ElevatedButton(
                         child: const Text('Next'),
-                        onPressed: () => Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    Explanation(uid: widget.uid))),
+                        onPressed: () async {
+                          String uid = AuthService().getUser()!.uid;
+
+                          await DatabaseService(uid: uid)
+                              .addUserConsent(context, uid: uid);
+
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      Explanation(uid: widget.uid)));
+                        },
                       ),
                     ),
                   ),
@@ -211,8 +218,7 @@ class Explanation extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () async {
-            await AuthService().deleteUser();
-            Navigator.of(context).pop();
+            _popExperiment(context);
           },
         ),
         actions: [
@@ -304,8 +310,7 @@ class _AreYouReadyState extends State<AreYouReady> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () async {
-            await AuthService().deleteUser();
-            Navigator.of(context).pop();
+            await _popExperiment(context);
           },
         ),
         actions: [
@@ -395,4 +400,14 @@ class _AreYouReadyState extends State<AreYouReady> {
       ),
     );
   }
+}
+
+Future<void> _popExperiment(BuildContext context) async {
+  AuthService auth = AuthService();
+
+  await DatabaseService(uid: auth.getUser()!.uid)
+      .removeUserConsent(context, uid: auth.getUser()!.uid);
+
+  await auth.deleteUser();
+  Navigator.of(context).pop();
 }

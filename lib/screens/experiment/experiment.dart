@@ -47,7 +47,10 @@ void _showToast(BuildContext context) {
 
 class TimeIsUp extends StatefulWidget {
   final String uid;
-  const TimeIsUp({required this.uid, Key? key}) : super(key: key);
+  final int textNumber;
+
+  const TimeIsUp({required this.uid, required this.textNumber, Key? key})
+      : super(key: key);
 
   @override
   _TimeIsUpState createState() => _TimeIsUpState();
@@ -57,14 +60,55 @@ class _TimeIsUpState extends State<TimeIsUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ExperimentAppBar(
-        title: 'First Text',
-        uid: widget.uid,
-        onTimeFinish: () {},
+      appBar: AppBar(
+        title: const Text('Time Is Up'),
+        actions: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 15),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('ID: '),
+                  Theme(
+                    data: ThemeData(
+                      textSelectionTheme: TextSelectionThemeData(
+                        selectionColor: Colors.amber[700],
+                      ),
+                    ),
+                    child: SelectableText(widget.uid),
+                  ),
+                  const SizedBox(width: 5),
+                  IconButton(
+                    icon: const Icon(Icons.copy),
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: widget.uid));
+                      _showToast(context);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+        automaticallyImplyLeading: false,
+        centerTitle: true,
       ),
       body: Center(
-        child: SingleChildScrollView(
-          child: Center(),
+        child: SizedBox(
+          width: 200,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                  'Time is up. Press the button below when you are ready to start the quiz.'),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {},
+                child: Text('Take Text ${widget.textNumber} quiz'),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -254,8 +298,18 @@ class FirstTextState extends State<FirstText> with WidgetsBindingObserver {
     return Scaffold(
       appBar: ExperimentAppBar(
         title: 'First Text',
+        duration: const Duration(seconds: 10),
         uid: widget.uid,
-        onTimeFinish: () {},
+        onTimeFinish: () {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => TimeIsUp(
+                uid: widget.uid,
+                textNumber: 1,
+              ),
+            ),
+          );
+        },
       ),
       body: Center(
         child: SingleChildScrollView(
