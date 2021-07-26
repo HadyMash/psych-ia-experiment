@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -13,6 +14,20 @@ import 'package:reading_experiment/services/auth.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  const bool USE_EMULATOR = false;
+
+  if (USE_EMULATOR) {
+    // [Firestore | localhost:8080]
+    FirebaseFirestore.instance.settings = const Settings(
+      host: 'localhost:8080',
+      sslEnabled: false,
+      persistenceEnabled: false,
+    );
+
+    // [Authentication | localhost:9099]
+    await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+  }
 
   runApp(
     const MaterialApp(
