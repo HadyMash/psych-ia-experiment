@@ -15,8 +15,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
+  // ignore: constant_identifier_names
   const bool USE_EMULATOR = false;
 
+  // ignore: dead_code
   if (USE_EMULATOR) {
     // [Firestore | localhost:8080]
     FirebaseFirestore.instance.settings = const Settings(
