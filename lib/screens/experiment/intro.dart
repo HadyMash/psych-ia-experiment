@@ -284,9 +284,17 @@ class Explanation extends StatelessWidget {
   }
 }
 
-class AreYouReady extends StatelessWidget {
+class AreYouReady extends StatefulWidget {
   final String uid;
+
   const AreYouReady({required this.uid, Key? key}) : super(key: key);
+
+  @override
+  _AreYouReadyState createState() => _AreYouReadyState();
+}
+
+class _AreYouReadyState extends State<AreYouReady> {
+  int? groupNumber;
 
   @override
   Widget build(BuildContext context) {
@@ -314,13 +322,13 @@ class AreYouReady extends StatelessWidget {
                         selectionColor: Colors.amber[700],
                       ),
                     ),
-                    child: SelectableText(uid),
+                    child: SelectableText(widget.uid),
                   ),
                   const SizedBox(width: 5),
                   IconButton(
                     icon: const Icon(Icons.copy),
                     onPressed: () {
-                      Clipboard.setData(ClipboardData(text: uid));
+                      Clipboard.setData(ClipboardData(text: widget.uid));
                       _showToast(context);
                     },
                   ),
@@ -352,14 +360,32 @@ class AreYouReady extends StatelessWidget {
                   textAlign: TextAlign.left,
                 ),
                 const SizedBox(height: 20),
-                Center(
-                  child: ElevatedButton(
-                    child: const Text('Start'),
-                    onPressed: () async {
-                      // TODO Create a new session
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => FirstText(uid: uid)));
+                DropdownButton<int?>(
+                  value: groupNumber,
+                  onChanged: (int? number) {
+                    setState(() => groupNumber = number);
+                  },
+                  items: <int>[1, 2, 3].map<DropdownMenuItem<int>>(
+                    (int number) {
+                      return DropdownMenuItem<int>(
+                        value: number,
+                        child: Text('Group $number'),
+                      );
                     },
+                  ).toList(),
+                ),
+                const SizedBox(height: 20),
+                Offstage(
+                  offstage: groupNumber == null,
+                  child: Center(
+                    child: ElevatedButton(
+                      child: const Text('Start'),
+                      onPressed: () async {
+                        // TODO Create a new session
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => FirstText(uid: widget.uid)));
+                      },
+                    ),
                   ),
                 ),
               ],
