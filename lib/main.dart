@@ -93,6 +93,7 @@ class _HomeState extends State<Home> {
       if (user != null) {
         if (user.isAnonymous) {
           // go to experiment
+          // TODO navigate to the appropriate text by getting shared preferences text
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => Agreement(uid: user.uid)));
         } else {
