@@ -59,6 +59,7 @@ class DatabaseService {
     } catch (e) {
       print(e.toString());
       _showErrorToast(context, text: e.toString());
+      return e;
     }
   }
 
@@ -69,6 +70,7 @@ class DatabaseService {
     } catch (e) {
       print(e.toString());
       _showErrorToast(context, text: e.toString());
+      return e;
     }
   }
 

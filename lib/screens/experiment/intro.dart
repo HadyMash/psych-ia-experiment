@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:reading_experiment/screens/experiment/experiment.dart';
 import 'package:reading_experiment/services/auth.dart';
 import 'package:reading_experiment/services/database.dart';
+import 'package:reading_experiment/shared/experiment_progress.dart';
 
 void _showToast(BuildContext context) {
   late FToast fToast;
@@ -56,6 +57,12 @@ class Agreement extends StatefulWidget {
 class _AgreementState extends State<Agreement> {
   bool offstage = true;
   bool isChecked = false;
+
+  @override
+  void initState() {
+    super.initState();
+    setExperimentProgress(ExperimentProgress.agreement);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -185,13 +192,15 @@ class _AgreementState extends State<Agreement> {
                         onPressed: () async {
                           String uid = AuthService().getUser()!.uid;
 
-                          await DatabaseService(uid: uid)
+                          dynamic result = await DatabaseService(uid: uid)
                               .addUserConsent(context, uid: uid);
 
-                          Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      Explanation(uid: widget.uid)));
+                          if (result == null) {
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        Explanation(uid: widget.uid)));
+                          }
                         },
                       ),
                     ),
@@ -212,6 +221,8 @@ class Explanation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    setExperimentProgress(ExperimentProgress.experimentInfo);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Introduction - Explanation'),
@@ -301,6 +312,12 @@ class AreYouReady extends StatefulWidget {
 
 class _AreYouReadyState extends State<AreYouReady> {
   int? groupNumber;
+
+  @override
+  void initState() {
+    super.initState();
+    setExperimentProgress(ExperimentProgress.areYouReady);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -404,6 +421,8 @@ class _AreYouReadyState extends State<AreYouReady> {
 
 Future<void> _popExperiment(BuildContext context) async {
   AuthService auth = AuthService();
+
+  await setExperimentProgress(ExperimentProgress.agreement);
 
   await DatabaseService(uid: auth.getUser()!.uid)
       .removeUserConsent(context, uid: auth.getUser()!.uid);
