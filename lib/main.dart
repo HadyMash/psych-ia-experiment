@@ -116,9 +116,8 @@ class _HomeState extends State<Home> {
           onPressed: () async {
             final AuthService _auth = AuthService();
             dynamic currentUser = _auth.getUser();
-            if (currentUser == null) {
-              await _auth.deleteUserData();
-              await _auth.deleteUser();
+            if (currentUser != null) {
+              await _auth.deleteUserAndData(uid: AuthService().getUser()!.uid);
             }
 
             dynamic result = await _auth.logInAnonymously();
@@ -133,8 +132,12 @@ class _HomeState extends State<Home> {
       ),
       bottomNavigationBar: SizedBox(
         height: height * 0.1,
-        child: const Center(
-          child: ClickableText('Go to Admin Portal'),
+        child: Center(
+          child: ClickableText(
+            text: 'Go to Admin Portal',
+            onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const AdminLogin())),
+          ),
         ),
       ),
     );
@@ -143,8 +146,10 @@ class _HomeState extends State<Home> {
 
 class ClickableText extends StatefulWidget {
   final String text;
+  final void Function() onTap;
 
-  const ClickableText(this.text, {Key? key}) : super(key: key);
+  const ClickableText({required this.text, required this.onTap, Key? key})
+      : super(key: key);
 
   @override
   ClickableTextState createState() => ClickableTextState();
@@ -161,8 +166,7 @@ class ClickableTextState extends State<ClickableText> {
         onExit: (_) => setState(() => textColor = Colors.black),
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
-          onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const AdminLogin())),
+          onTap: widget.onTap,
           child: Text(
             widget.text,
             style: TextStyle(

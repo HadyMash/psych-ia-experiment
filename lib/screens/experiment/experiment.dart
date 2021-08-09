@@ -4,6 +4,7 @@ import 'dart:html';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:reading_experiment/screens/experiment/exit_experiment.dart';
 
 void _showToast(BuildContext context) {
   late FToast fToast;
@@ -94,22 +95,27 @@ class _TimeIsUpState extends State<TimeIsUp> {
         automaticallyImplyLeading: false,
         centerTitle: true,
       ),
-      body: Center(
-        child: SizedBox(
-          width: 200,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                  'Time is up. Press the button below when you are ready to start the quiz.'),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {},
-                child: Text('Take Text ${widget.textNumber} quiz'),
+      body: Stack(
+        children: [
+          Center(
+            child: SizedBox(
+              width: 200,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                      'Time is up. Press the button below when you are ready to start the quiz.'),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {},
+                    child: Text('Take Text ${widget.textNumber} quiz'),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+          const ExitExperiment(),
+        ],
       ),
     );
   }
@@ -311,10 +317,15 @@ class FirstTextState extends State<FirstText> with WidgetsBindingObserver {
           );
         },
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Center(),
-        ),
+      body: Stack(
+        children: const [
+          Center(
+            child: SingleChildScrollView(
+              child: Center(),
+            ),
+          ),
+          ExitExperiment(),
+        ],
       ),
     );
   }
@@ -379,10 +390,15 @@ class _FirstQuizState extends State<FirstQuiz> with WidgetsBindingObserver {
         uid: widget.uid,
         onTimeFinish: () {},
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Center(),
-        ),
+      body: Stack(
+        children: const [
+          Center(
+            child: SingleChildScrollView(
+              child: Center(),
+            ),
+          ),
+          ExitExperiment(),
+        ],
       ),
     );
   }
@@ -447,10 +463,15 @@ class _SecondTextState extends State<SecondText> with WidgetsBindingObserver {
         uid: widget.uid,
         onTimeFinish: () {},
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Center(),
-        ),
+      body: Stack(
+        children: const [
+          Center(
+            child: SingleChildScrollView(
+              child: Center(),
+            ),
+          ),
+          ExitExperiment(),
+        ],
       ),
     );
   }
@@ -515,10 +536,15 @@ class _SecondQuizState extends State<SecondQuiz> with WidgetsBindingObserver {
         uid: widget.uid,
         onTimeFinish: () {},
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Center(),
-        ),
+      body: Stack(
+        children: const [
+          Center(
+            child: SingleChildScrollView(
+              child: Center(),
+            ),
+          ),
+          ExitExperiment(),
+        ],
       ),
     );
   }
@@ -583,10 +609,15 @@ class _ThirdTextState extends State<ThirdText> with WidgetsBindingObserver {
         uid: widget.uid,
         onTimeFinish: () {},
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Center(),
-        ),
+      body: Stack(
+        children: const [
+          Center(
+            child: SingleChildScrollView(
+              child: Center(),
+            ),
+          ),
+          ExitExperiment(),
+        ],
       ),
     );
   }
@@ -651,10 +682,15 @@ class _ThirdQuizState extends State<ThirdQuiz> with WidgetsBindingObserver {
         uid: widget.uid,
         onTimeFinish: () {},
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Center(),
-        ),
+      body: Stack(
+        children: const [
+          Center(
+            child: SingleChildScrollView(
+              child: Center(),
+            ),
+          ),
+          ExitExperiment(),
+        ],
       ),
     );
   }

@@ -41,7 +41,20 @@ class AuthService {
   }
 
   // TODO make a function to delete a user and their data
-  Future deleteUserData() async {}
+  /// delete a user and their data
+  Future deleteUserAndData({required String uid}) async {
+    try {
+      // delete answers
+
+      // delete user
+      await deleteUser();
+
+      return null;
+    } catch (e) {
+      print(e);
+      return e;
+    }
+  }
 
   Future deleteUser() async {
     try {
