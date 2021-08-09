@@ -8,8 +8,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:reading_experiment/screens/admin/admin_login.dart';
 import 'package:reading_experiment/screens/admin/admin_panel.dart';
+import 'package:reading_experiment/screens/experiment/experiment.dart';
 import 'package:reading_experiment/screens/experiment/intro.dart';
 import 'package:reading_experiment/services/auth.dart';
+import 'package:reading_experiment/shared/experiment_progress.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -87,14 +89,72 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) async {
       final User? user = AuthService().getUser();
 
       if (user != null) {
         if (user.isAnonymous) {
           // go to experiment
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => Agreement(uid: user.uid)));
+          ExperimentProgress? progress = await getExperimentProgress();
+          if (progress == null) {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => Agreement(uid: user.uid)));
+          } else {
+            switch (progress) {
+              case ExperimentProgress.agreement:
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => Agreement(uid: user.uid)));
+                break;
+              case ExperimentProgress.experimentInfo:
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => Explanation(uid: user.uid)));
+                break;
+              case ExperimentProgress.areYouReady:
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => AreYouReady(uid: user.uid)));
+                break;
+              case ExperimentProgress.firstText:
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => FirstText(uid: user.uid)));
+                break;
+              case ExperimentProgress.firstQuiz:
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => TimeIsUp(
+                    uid: user.uid,
+                    textNumber: 1,
+                  ),
+                ));
+                break;
+              case ExperimentProgress.secondText:
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => SecondText(uid: user.uid)));
+                break;
+              case ExperimentProgress.secondQuiz:
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => TimeIsUp(
+                    uid: user.uid,
+                    textNumber: 2,
+                  ),
+                ));
+                break;
+              case ExperimentProgress.thirdText:
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ThirdText(uid: user.uid)));
+                break;
+              case ExperimentProgress.thirdQuiz:
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => TimeIsUp(
+                    uid: user.uid,
+                    textNumber: 3,
+                  ),
+                ));
+                break;
+              case ExperimentProgress.error:
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => Agreement(uid: user.uid)));
+                break;
+            }
+          }
         } else {
           // go to admin panel
           Navigator.of(context).push(

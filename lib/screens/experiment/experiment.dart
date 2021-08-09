@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:reading_experiment/screens/experiment/exit_experiment.dart';
+import 'package:reading_experiment/shared/experiment_progress.dart';
 
 void _showToast(BuildContext context) {
   late FToast fToast;
@@ -58,6 +59,22 @@ class TimeIsUp extends StatefulWidget {
 }
 
 class _TimeIsUpState extends State<TimeIsUp> {
+  @override
+  void initState() {
+    super.initState();
+    switch (widget.textNumber) {
+      case 1:
+        setExperimentProgress(ExperimentProgress.firstQuiz);
+        break;
+      case 2:
+        setExperimentProgress(ExperimentProgress.secondQuiz);
+        break;
+      case 3:
+        setExperimentProgress(ExperimentProgress.thirdQuiz);
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,6 +138,7 @@ class _TimeIsUpState extends State<TimeIsUp> {
   }
 }
 
+// TODO use shared preferences to save the time left
 class ExperimentAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
   final String uid;
@@ -262,6 +280,9 @@ class FirstTextState extends State<FirstText> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+
+    setExperimentProgress(ExperimentProgress.firstText);
+
     if (kIsWeb) {
       window.addEventListener('focus', onFocus);
       window.addEventListener('blur', onBlur);
@@ -418,6 +439,9 @@ class _SecondTextState extends State<SecondText> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+
+    setExperimentProgress(ExperimentProgress.secondText);
+
     if (kIsWeb) {
       window.addEventListener('focus', onFocus);
       window.addEventListener('blur', onBlur);
@@ -564,6 +588,9 @@ class _ThirdTextState extends State<ThirdText> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+
+    setExperimentProgress(ExperimentProgress.thirdText);
+
     if (kIsWeb) {
       window.addEventListener('focus', onFocus);
       window.addEventListener('blur', onBlur);
