@@ -132,6 +132,7 @@ class _TimeIsUpState extends State<TimeIsUp> {
   }
 }
 
+// TODO use shared preferences to save the time left
 class ExperimentAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
   final String uid;
