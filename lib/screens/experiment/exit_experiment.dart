@@ -77,7 +77,8 @@ class _ExitExperimentState extends State<ExitExperiment> {
                                       await auth.deleteUserAndData(uid: uid);
 
                                   if (authResult == null) {
-                                    Navigator.of(context).pop();
+                                    Navigator.of(context)
+                                        .popUntil((route) => route.isFirst);
                                   } else {
                                     setState(() => loading = false);
                                     _showToast(context,
