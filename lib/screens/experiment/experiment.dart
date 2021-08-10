@@ -325,7 +325,6 @@ class FirstTextState extends State<FirstText> with WidgetsBindingObserver {
     return Scaffold(
       appBar: ExperimentAppBar(
         title: 'First Text',
-        duration: const Duration(seconds: 10),
         uid: widget.uid,
         onTimeFinish: () {
           Navigator.of(context).pushReplacement(
