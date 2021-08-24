@@ -196,7 +196,25 @@ class _HomeState extends State<Home> {
           child: ClickableText(
             text: 'Go to Admin Portal',
             onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const AdminLogin())),
+              PageRouteBuilder(
+                transitionDuration: const Duration(milliseconds: 500),
+                pageBuilder: (BuildContext context, Animation<double> animation,
+                    Animation<double> secondaryAnimation) {
+                  return const AdminLogin();
+                },
+                transitionsBuilder: (BuildContext context,
+                    Animation<double> animation,
+                    Animation<double> secondaryAnimation,
+                    Widget child) {
+                  return Align(
+                    child: FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
         ),
       ),
