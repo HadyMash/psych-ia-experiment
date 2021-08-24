@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -10,11 +11,8 @@
 
     For more details:
     * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
   -->
-  <base href="$FLUTTER_BASE_HREF">
+  <base href="/">
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
@@ -29,29 +27,11 @@
   <title>reading_experiment</title>
   <link rel="manifest" href="manifest.json">
 </head>
+
 <body>
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
        https://developers.google.com/web/fundamentals/primers/service-workers -->
-  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-auth.js"></script>
-
-  <script>
-    // Your web app's Firebase configuration
-    var firebaseConfig = {
-      apiKey: "AIzaSyD_Nv0EKvwk62uG4XLwHaE1hcHJG_AmvZE",
-      authDomain: "psych-ia-experiment-platform.firebaseapp.com",
-      projectId: "psych-ia-experiment-platform",
-      storageBucket: "psych-ia-experiment-platform.appspot.com",
-      messagingSenderId: "620242010977",
-      appId: "1:620242010977:web:648af9f0d8c54c14edfb20"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-  </script>
-
   <script>
     var serviceWorkerVersion = null;
     var scriptLoaded = false;
@@ -86,7 +66,7 @@
             if (!reg.active && (reg.installing || reg.waiting)) {
               // No active web worker and we have installed or are installing
               // one for the first time. Simply wait for it to activate.
-              waitForActivation(reg.installing || reg.waiting);
+              waitForActivation(reg.installing ?? reg.waiting);
             } else if (!reg.active.scriptURL.endsWith(serviceWorkerVersion)) {
               // When the app updates the serviceWorkerVersion changes, so we
               // need to ask the service worker to update.
@@ -116,5 +96,30 @@
       loadMainDartJs();
     }
   </script>
+
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+
+  <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-auth.js"></script>
+
+  <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyD_Nv0EKvwk62uG4XLwHaE1hcHJG_AmvZE",
+      authDomain: "psych-ia-experiment-platform.firebaseapp.com",
+      projectId: "psych-ia-experiment-platform",
+      storageBucket: "psych-ia-experiment-platform.appspot.com",
+      messagingSenderId: "620242010977",
+      appId: "1:620242010977:web:9f2df68f31b084b5edfb20"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
 </body>
+
 </html>
