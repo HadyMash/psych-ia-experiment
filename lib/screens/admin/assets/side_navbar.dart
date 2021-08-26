@@ -40,7 +40,8 @@ void _showToast(BuildContext context, {required String text}) {
 }
 
 class SideNavigationBar extends StatefulWidget {
-  const SideNavigationBar({Key? key}) : super(key: key);
+  final void Function(int) onChange;
+  const SideNavigationBar({required this.onChange, Key? key}) : super(key: key);
 
   @override
   _SideNavigationBarState createState() => _SideNavigationBarState();
@@ -71,6 +72,7 @@ class _SideNavigationBarState extends State<SideNavigationBar> {
         curve: Curves.easeInOut,
         height: double.infinity,
         width: navBarWidth,
+        clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           boxShadow: [
@@ -100,7 +102,10 @@ class _SideNavigationBarState extends State<SideNavigationBar> {
                     icon: Icons.dashboard_rounded,
                     height: itemHeight,
                     width: navBarWidth,
-                    onTap: () => setState(() => selectedIndex = 0),
+                    onTap: () {
+                      setState(() => selectedIndex = 0);
+                      widget.onChange(selectedIndex);
+                    },
                   ),
                   PageIcon.tooltip(
                     label: 'Participants',
@@ -110,7 +115,10 @@ class _SideNavigationBarState extends State<SideNavigationBar> {
                     icon: Icons.people_rounded,
                     height: itemHeight,
                     width: navBarWidth,
-                    onTap: () => setState(() => selectedIndex = 1),
+                    onTap: () {
+                      setState(() => selectedIndex = 1);
+                      widget.onChange(selectedIndex);
+                    },
                   ),
                   PageIcon.tooltip(
                     label: 'Unlock Requests',
@@ -121,7 +129,10 @@ class _SideNavigationBarState extends State<SideNavigationBar> {
                     icon: Icons.lock_open_rounded,
                     height: itemHeight,
                     width: navBarWidth,
-                    onTap: () => setState(() => selectedIndex = 2),
+                    onTap: () {
+                      setState(() => selectedIndex = 2);
+                      widget.onChange(selectedIndex);
+                    },
                   ),
                   PageIcon.tooltip(
                     label: 'Discovery',
@@ -132,7 +143,10 @@ class _SideNavigationBarState extends State<SideNavigationBar> {
                     icon: Icons.search_rounded,
                     height: itemHeight,
                     width: navBarWidth,
-                    onTap: () => setState(() => selectedIndex = 3),
+                    onTap: () {
+                      setState(() => selectedIndex = 3);
+                      widget.onChange(selectedIndex);
+                    },
                   ),
                 ],
               ),
