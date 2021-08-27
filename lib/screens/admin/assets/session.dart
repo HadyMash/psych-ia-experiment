@@ -21,15 +21,14 @@ class Session extends StatefulWidget {
 
 class _SessionState extends State<Session> {
   final Map<ExperimentProgress, double> progressPercentage = {
-    ExperimentProgress.agreement: (1 / 9) * 1,
-    ExperimentProgress.experimentInfo: (1 / 9) * 2,
-    ExperimentProgress.areYouReady: (1 / 9) * 3,
-    ExperimentProgress.firstText: (1 / 9) * 4,
-    ExperimentProgress.firstQuiz: (1 / 9) * 5,
-    ExperimentProgress.secondText: (1 / 9) * 6,
-    ExperimentProgress.secondQuiz: (1 / 9) * 7,
-    ExperimentProgress.thirdText: (1 / 9) * 8,
-    ExperimentProgress.thirdQuiz: (1 / 9) * 9,
+    ExperimentProgress.agreement: (1 / 8) * 1,
+    ExperimentProgress.experimentInfo: (1 / 8) * 2,
+    ExperimentProgress.areYouReady: (1 / 8) * 3,
+    ExperimentProgress.firstText: (1 / 8) * 4,
+    ExperimentProgress.firstQuiz: (1 / 8) * 5,
+    ExperimentProgress.secondText: (1 / 8) * 6,
+    ExperimentProgress.secondQuiz: (1 / 8) * 7,
+    ExperimentProgress.finish: (1 / 8) * 8,
     ExperimentProgress.error: 0.0,
   };
 
@@ -41,8 +40,6 @@ class _SessionState extends State<Session> {
     ExperimentProgress.firstQuiz: 'First Quiz',
     ExperimentProgress.secondText: 'Second Text',
     ExperimentProgress.secondQuiz: 'Second Quiz',
-    ExperimentProgress.thirdText: 'Third Text',
-    ExperimentProgress.thirdQuiz: 'Third Quiz',
     ExperimentProgress.error: 'Error',
   };
 

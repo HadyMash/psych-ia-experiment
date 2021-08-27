@@ -12,8 +12,7 @@ enum ExperimentProgress {
   firstQuiz,
   secondText,
   secondQuiz,
-  thirdText,
-  thirdQuiz,
+  finish,
   error,
 }
 

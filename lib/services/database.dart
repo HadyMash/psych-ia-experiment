@@ -118,7 +118,6 @@ class DatabaseService {
 enum TextNumber {
   firstText,
   secondText,
-  thirdText,
 }
 
 class TextService {
@@ -130,22 +129,17 @@ class TextService {
   Future<TextData?> getTexts() async {
     try {
       String firstText = await textCollection
-          .doc(Texts.firstText.toString())
+          .doc('firstText')
           .get()
-          .then((doc) => (doc.data() as Map)['text']);
+          .then((doc) => doc.get('text'));
       String secondText = await textCollection
-          .doc(Texts.secondText.toString())
+          .doc('secondText')
           .get()
-          .then((doc) => (doc.data() as Map)['text']);
-      String thirdText = await textCollection
-          .doc(Texts.thirdText.toString())
-          .get()
-          .then((doc) => (doc.data() as Map)['text']);
+          .then((doc) => doc.get('text'));
 
       return TextData(
         firstText: firstText,
         secondText: secondText,
-        thirdText: thirdText,
       );
     } catch (e) {
       print(e.toString());

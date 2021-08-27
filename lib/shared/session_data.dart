@@ -22,7 +22,5 @@ class SessionData {
     ExperimentProgress.firstQuiz: 'First Quiz',
     ExperimentProgress.secondText: 'Second Text',
     ExperimentProgress.secondQuiz: 'Second Quiz',
-    ExperimentProgress.thirdText: 'Third Text',
-    ExperimentProgress.thirdQuiz: 'Third Quiz',
   };
 }

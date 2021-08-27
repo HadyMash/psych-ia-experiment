@@ -73,10 +73,6 @@ class _TimeIsUpState extends State<TimeIsUp> {
         print('second quiz');
         setExperimentProgress(ExperimentProgress.secondQuiz);
         break;
-      case 3:
-        print('third quiz');
-        setExperimentProgress(ExperimentProgress.thirdQuiz);
-        break;
     }
   }
 
@@ -134,9 +130,7 @@ class _TimeIsUpState extends State<TimeIsUp> {
                       MaterialPageRoute(
                         builder: (context) => (widget.textNumber == 1
                             ? FirstQuiz(uid: widget.uid)
-                            : (widget.textNumber == 2
-                                ? SecondQuiz(uid: widget.uid)
-                                : ThirdQuiz(uid: widget.uid))),
+                            : SecondQuiz(uid: widget.uid)),
                       ),
                     ),
                   ),
@@ -579,160 +573,6 @@ class _SecondQuizState extends State<SecondQuiz> with WidgetsBindingObserver {
     return Scaffold(
       appBar: ExperimentAppBar(
         title: 'Second Quiz',
-        uid: widget.uid,
-        onTimeFinish: () {},
-      ),
-      body: Stack(
-        children: const [
-          Center(
-            child: SingleChildScrollView(
-              child: Center(),
-            ),
-          ),
-          ExitExperiment(),
-        ],
-      ),
-    );
-  }
-}
-
-class ThirdText extends StatefulWidget {
-  final String uid;
-  const ThirdText({required this.uid, Key? key}) : super(key: key);
-
-  @override
-  _ThirdTextState createState() => _ThirdTextState();
-}
-
-class _ThirdTextState extends State<ThirdText> with WidgetsBindingObserver {
-  bool active = true;
-
-  @override
-  void initState() {
-    super.initState();
-
-    setExperimentProgress(ExperimentProgress.thirdText);
-
-    if (kIsWeb) {
-      window.addEventListener('focus', onFocus);
-      window.addEventListener('blur', onBlur);
-    } else {
-      WidgetsBinding.instance!.addObserver(this);
-    }
-  }
-
-  @override
-  void dispose() {
-    active = false;
-    if (kIsWeb) {
-      window.removeEventListener('focus', onFocus);
-      window.removeEventListener('blur', onBlur);
-    } else {
-      WidgetsBinding.instance!.removeObserver(this);
-    }
-    super.dispose();
-  }
-
-  void onFocus(Event e) {
-    if (active) {
-      didChangeAppLifecycleState(AppLifecycleState.resumed);
-    }
-  }
-
-  void onBlur(Event e) {
-    if (active) {
-      didChangeAppLifecycleState(AppLifecycleState.paused);
-    }
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    print(state);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    TextData? texts = Provider.of<TextData?>(context);
-
-    return Scaffold(
-      appBar: ExperimentAppBar(
-        title: 'Third Text',
-        uid: widget.uid,
-        onTimeFinish: () {},
-      ),
-      body: Stack(
-        children: [
-          Center(
-            child: SingleChildScrollView(
-              child: Center(
-                child: Text(texts?.thirdText ??
-                    'Error Getting Text. Please exit the experiment and try again.'),
-              ),
-            ),
-          ),
-          const ExitExperiment(),
-        ],
-      ),
-    );
-  }
-}
-
-class ThirdQuiz extends StatefulWidget {
-  final String uid;
-  const ThirdQuiz({required this.uid, Key? key}) : super(key: key);
-
-  @override
-  _ThirdQuizState createState() => _ThirdQuizState();
-}
-
-class _ThirdQuizState extends State<ThirdQuiz> with WidgetsBindingObserver {
-  bool active = true;
-
-  @override
-  void initState() {
-    super.initState();
-    if (kIsWeb) {
-      window.addEventListener('focus', onFocus);
-      window.addEventListener('blur', onBlur);
-    } else {
-      WidgetsBinding.instance!.addObserver(this);
-    }
-  }
-
-  @override
-  void dispose() {
-    active = false;
-    if (kIsWeb) {
-      window.removeEventListener('focus', onFocus);
-      window.removeEventListener('blur', onBlur);
-    } else {
-      WidgetsBinding.instance!.removeObserver(this);
-    }
-    super.dispose();
-  }
-
-  void onFocus(Event e) {
-    if (active) {
-      didChangeAppLifecycleState(AppLifecycleState.resumed);
-    }
-  }
-
-  void onBlur(Event e) {
-    if (active) {
-      didChangeAppLifecycleState(AppLifecycleState.paused);
-    }
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    print(state);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: ExperimentAppBar(
-        title: 'Third Quiz',
         uid: widget.uid,
         onTimeFinish: () {},
       ),

@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:reading_experiment/screens/admin/admin_login.dart';
 import 'package:reading_experiment/screens/admin/admin_panel.dart';
 import 'package:reading_experiment/screens/experiment/experiment.dart';
+import 'package:reading_experiment/screens/experiment/finish.dart';
 import 'package:reading_experiment/screens/experiment/intro.dart';
 import 'package:reading_experiment/services/auth.dart';
 import 'package:reading_experiment/services/database.dart';
@@ -41,6 +42,7 @@ void main() async {
     FutureProvider<TextData?>(
       create: (_) => TextService().getTexts(),
       initialData: null,
+      lazy: false,
       child: const MaterialApp(
         home: Home(),
       ),
@@ -145,16 +147,9 @@ class _HomeState extends State<Home> {
                   ),
                 ));
                 break;
-              case ExperimentProgress.thirdText:
+              case ExperimentProgress.finish:
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ThirdText(uid: user.uid)));
-                break;
-              case ExperimentProgress.thirdQuiz:
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => TimeIsUp(
-                    uid: user.uid,
-                    textNumber: 3,
-                  ),
+                  builder: (context) => const Finish(),
                 ));
                 break;
               case ExperimentProgress.error:
