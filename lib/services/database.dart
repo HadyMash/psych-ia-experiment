@@ -126,7 +126,7 @@ class TextService {
       FirebaseFirestore.instance.collection('texts');
 
   // get text
-  Future<TextData?> getTexts() async {
+  Future<TextData?> getTexts(BuildContext context) async {
     try {
       String firstText = await textCollection
           .doc('firstText')
@@ -143,7 +143,9 @@ class TextService {
       );
     } catch (e) {
       print(e.toString());
-      return null;
+      _showErrorToast(context,
+          text:
+              'Error Fetching Texts. Please reload and try again.\nIf you are already in the experiment, please exit then reload.');
     }
   }
 }

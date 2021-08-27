@@ -38,16 +38,23 @@ void main() async {
     await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
   }
 
-  runApp(
-    FutureProvider<TextData?>(
-      create: (_) => TextService().getTexts(),
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureProvider<TextData?>(
+      create: (_) => TextService().getTexts(context),
       initialData: null,
       lazy: false,
       child: const MaterialApp(
         home: Home(),
       ),
-    ),
-  );
+    );
+  }
 }
 
 class Home extends StatefulWidget {
