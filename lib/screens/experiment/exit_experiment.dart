@@ -60,7 +60,7 @@ class _ExitExperimentState extends State<ExitExperiment> {
                             onPressed: () async {
                               setState(() => loading = true);
 
-                              await showDialog(
+                              showDialog(
                                 context: context,
                                 barrierDismissible: false,
                                 barrierColor: Colors.transparent,
@@ -80,7 +80,8 @@ class _ExitExperimentState extends State<ExitExperiment> {
                               if (consentResult == null) {
                                 // TODO delete user session
                                 // ignore: avoid_init_to_null
-                                dynamic sessionResult = null;
+                                dynamic sessionResult =
+                                    await database.deleteSession();
                                 if (sessionResult == null) {
                                   // delete user and their data
                                   dynamic authResult =

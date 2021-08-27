@@ -6,13 +6,17 @@ import 'package:flutter/foundation.dart';
 import 'dart:html';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import 'package:reading_experiment/screens/admin/admin_login.dart';
 import 'package:reading_experiment/screens/admin/admin_panel.dart';
 import 'package:reading_experiment/screens/experiment/experiment.dart';
 import 'package:reading_experiment/screens/experiment/intro.dart';
 import 'package:reading_experiment/services/auth.dart';
+import 'package:reading_experiment/services/database.dart';
 import 'package:reading_experiment/shared/experiment_progress.dart';
+import 'package:reading_experiment/shared/text_data.dart';
 
+// TODO add a check for internet connectivity
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -34,8 +38,12 @@ void main() async {
   }
 
   runApp(
-    const MaterialApp(
-      home: Home(),
+    FutureProvider<TextData?>(
+      create: (_) => TextService().getTexts(),
+      initialData: null,
+      child: const MaterialApp(
+        home: Home(),
+      ),
     ),
   );
 }
@@ -182,6 +190,8 @@ class _HomeState extends State<Home> {
 
             dynamic result = await _auth.logInAnonymously();
             if (result is User) {
+              await DatabaseService(uid: _auth.getUser()!.uid)
+                  .makeSession(uid: _auth.getUser()!.uid);
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => Agreement(uid: result.uid.toString())));
             } else {

@@ -4,8 +4,10 @@ import 'dart:html';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import 'package:reading_experiment/screens/experiment/exit_experiment.dart';
 import 'package:reading_experiment/shared/experiment_progress.dart';
+import 'package:reading_experiment/shared/text_data.dart';
 
 void _showToast(BuildContext context) {
   late FToast fToast;
@@ -64,12 +66,15 @@ class _TimeIsUpState extends State<TimeIsUp> {
     super.initState();
     switch (widget.textNumber) {
       case 1:
+        print('first quiz');
         setExperimentProgress(ExperimentProgress.firstQuiz);
         break;
       case 2:
+        print('second quiz');
         setExperimentProgress(ExperimentProgress.secondQuiz);
         break;
       case 3:
+        print('third quiz');
         setExperimentProgress(ExperimentProgress.thirdQuiz);
         break;
     }
@@ -124,8 +129,16 @@ class _TimeIsUpState extends State<TimeIsUp> {
                       'Time is up. Press the button below when you are ready to start the quiz.'),
                   const SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: () {},
                     child: Text('Take Text ${widget.textNumber} quiz'),
+                    onPressed: () => Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => (widget.textNumber == 1
+                            ? FirstQuiz(uid: widget.uid)
+                            : (widget.textNumber == 2
+                                ? SecondQuiz(uid: widget.uid)
+                                : ThirdQuiz(uid: widget.uid))),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -322,6 +335,8 @@ class FirstTextState extends State<FirstText> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    TextData? texts = Provider.of<TextData?>(context);
+
     return Scaffold(
       appBar: ExperimentAppBar(
         title: 'First Text',
@@ -338,13 +353,16 @@ class FirstTextState extends State<FirstText> with WidgetsBindingObserver {
         },
       ),
       body: Stack(
-        children: const [
+        children: [
           Center(
             child: SingleChildScrollView(
-              child: Center(),
+              child: Center(
+                child: Text(texts?.firstText ??
+                    'Error Getting Text. Please exit the experiment and try again.'),
+              ),
             ),
           ),
-          ExitExperiment(),
+          const ExitExperiment(),
         ],
       ),
     );
@@ -406,7 +424,7 @@ class _FirstQuizState extends State<FirstQuiz> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: ExperimentAppBar(
-        title: 'First Text',
+        title: 'First Quiz',
         uid: widget.uid,
         onTimeFinish: () {},
       ),
@@ -480,20 +498,25 @@ class _SecondTextState extends State<SecondText> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    TextData? texts = Provider.of<TextData?>(context);
+
     return Scaffold(
       appBar: ExperimentAppBar(
-        title: 'First Text',
+        title: 'Second Text',
         uid: widget.uid,
         onTimeFinish: () {},
       ),
       body: Stack(
-        children: const [
+        children: [
           Center(
             child: SingleChildScrollView(
-              child: Center(),
+              child: Center(
+                child: Text(texts?.secondText ??
+                    'Error Getting Text. Please exit the experiment and try again.'),
+              ),
             ),
           ),
-          ExitExperiment(),
+          const ExitExperiment(),
         ],
       ),
     );
@@ -555,7 +578,7 @@ class _SecondQuizState extends State<SecondQuiz> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: ExperimentAppBar(
-        title: 'First Text',
+        title: 'Second Quiz',
         uid: widget.uid,
         onTimeFinish: () {},
       ),
@@ -629,20 +652,25 @@ class _ThirdTextState extends State<ThirdText> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    TextData? texts = Provider.of<TextData?>(context);
+
     return Scaffold(
       appBar: ExperimentAppBar(
-        title: 'First Text',
+        title: 'Third Text',
         uid: widget.uid,
         onTimeFinish: () {},
       ),
       body: Stack(
-        children: const [
+        children: [
           Center(
             child: SingleChildScrollView(
-              child: Center(),
+              child: Center(
+                child: Text(texts?.thirdText ??
+                    'Error Getting Text. Please exit the experiment and try again.'),
+              ),
             ),
           ),
-          ExitExperiment(),
+          const ExitExperiment(),
         ],
       ),
     );
@@ -704,7 +732,7 @@ class _ThirdQuizState extends State<ThirdQuiz> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: ExperimentAppBar(
-        title: 'First Text',
+        title: 'Third Quiz',
         uid: widget.uid,
         onTimeFinish: () {},
       ),

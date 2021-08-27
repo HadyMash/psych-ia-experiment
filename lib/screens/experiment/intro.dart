@@ -403,7 +403,8 @@ class _AreYouReadyState extends State<AreYouReady> {
                     child: ElevatedButton(
                       child: const Text('Start'),
                       onPressed: () async {
-                        // TODO Create a new session
+                        await DatabaseService(uid: AuthService().getUser()!.uid)
+                            .setGroupNumber(groupNumber!);
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                             builder: (context) => FirstText(uid: widget.uid)));
                       },
@@ -420,13 +421,24 @@ class _AreYouReadyState extends State<AreYouReady> {
 }
 
 Future<void> _popExperiment(BuildContext context) async {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    barrierColor: Colors.transparent,
+    builder: (context) {
+      return Container();
+    },
+  );
+
   AuthService auth = AuthService();
+  DatabaseService database = DatabaseService(uid: auth.getUser()!.uid);
 
   await setExperimentProgress(ExperimentProgress.agreement);
 
-  await DatabaseService(uid: auth.getUser()!.uid)
-      .removeUserConsent(context, uid: auth.getUser()!.uid);
+  await database.removeUserConsent(context, uid: auth.getUser()!.uid);
+
+  await database.deleteSession();
 
   await auth.deleteUser();
-  Navigator.of(context).pop();
+  Navigator.of(context).popUntil((route) => route.isFirst);
 }
