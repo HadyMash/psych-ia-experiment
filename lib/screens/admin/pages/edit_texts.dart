@@ -342,17 +342,3 @@ class _EditTextsState extends State<EditTexts> {
     );
   }
 }
-
-class TextEditor extends StatefulWidget {
-  const TextEditor({Key? key}) : super(key: key);
-
-  @override
-  _TextEditorState createState() => _TextEditorState();
-}
-
-class _TextEditorState extends State<TextEditor> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
