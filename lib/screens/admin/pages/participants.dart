@@ -101,7 +101,6 @@ class _ParticipantsState extends State<Participants> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      // TODO Add total participant count to app bar.
       appBar: AppBar(
         title: const Text('Participants'),
         centerTitle: false,
