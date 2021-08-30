@@ -125,29 +125,17 @@ class TextService {
   final CollectionReference textCollection =
       FirebaseFirestore.instance.collection('texts');
 
+  final String texts = 'texts';
+
   // get text
   Future<TextData?> getTexts(BuildContext context) async {
     try {
-      return await textCollection.doc('texts').get().then((doc) {
+      return await textCollection.doc(texts).get().then((doc) {
         var data = doc.data() as Map;
 
         return TextData(
             firstText: data['firstText'], secondText: data['secondText']);
       });
-
-      // String firstText = await textCollection
-      //     .doc('firstText')
-      //     .get()
-      //     .then((doc) => doc.get('text'));
-      // String secondText = await textCollection
-      //     .doc('secondText')
-      //     .get()
-      //     .then((doc) => doc.get('text'));
-
-      // return TextData(
-      //   firstText: firstText,
-      //   secondText: secondText,
-      // );
     } catch (e) {
       print(e.toString());
       _showErrorToast(context,
@@ -158,7 +146,7 @@ class TextService {
 
   Future updateTexts(String textOne, String textTwo) async {
     try {
-      await textCollection.doc('texts').set(
+      await textCollection.doc(texts).set(
         {
           'firstText': textOne,
           'secondText': textTwo,
@@ -169,6 +157,12 @@ class TextService {
       return e;
     }
   }
+
+  Stream<TextData?> get textUpdates =>
+      textCollection.doc(texts).snapshots().map((doc) => TextData(
+            firstText: (doc.data() as Map)['firstText'],
+            secondText: (doc.data() as Map)['secondText'],
+          ));
 }
 
 _showErrorToast(BuildContext context, {required String text}) {
