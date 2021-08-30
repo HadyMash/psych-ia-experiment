@@ -135,16 +135,30 @@ class _SideNavigationBarState extends State<SideNavigationBar> {
                     },
                   ),
                   PageIcon.tooltip(
+                    label: 'Text Editor',
+                    tooltip:
+                        'Text Editor - Edit the texts displayed to the participants',
+                    selected: selectedIndex == 3,
+                    expanded: navBarExpanded,
+                    icon: Icons.edit_rounded,
+                    height: itemHeight,
+                    width: navBarWidth,
+                    onTap: () {
+                      setState(() => selectedIndex = 3);
+                      widget.onChange(selectedIndex);
+                    },
+                  ),
+                  PageIcon.tooltip(
                     label: 'Discovery',
                     tooltip:
                         'Discovery - Toggle whether particpants are able to enter the experiment.',
-                    selected: selectedIndex == 3,
+                    selected: selectedIndex == 4,
                     expanded: navBarExpanded,
                     icon: Icons.search_rounded,
                     height: itemHeight,
                     width: navBarWidth,
                     onTap: () {
-                      setState(() => selectedIndex = 3);
+                      setState(() => selectedIndex = 4);
                       widget.onChange(selectedIndex);
                     },
                   ),

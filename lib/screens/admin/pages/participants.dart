@@ -45,8 +45,6 @@ class _ParticipantsState extends State<Participants> {
           existingSessionIndices.add(i);
         }
       }
-      print(
-          'existing sessions: ${existingSessions.length}, indices list: ${existingSessionIndices.length}');
       for (int i = 0; i < currentSessions.length; i++) {
         // if any element in the sesssions doesn't have a uid matching the
         // `current session` in the for loop.

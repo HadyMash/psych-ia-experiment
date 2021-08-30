@@ -128,24 +128,45 @@ class TextService {
   // get text
   Future<TextData?> getTexts(BuildContext context) async {
     try {
-      String firstText = await textCollection
-          .doc('firstText')
-          .get()
-          .then((doc) => doc.get('text'));
-      String secondText = await textCollection
-          .doc('secondText')
-          .get()
-          .then((doc) => doc.get('text'));
+      return await textCollection.doc('texts').get().then((doc) {
+        var data = doc.data() as Map;
 
-      return TextData(
-        firstText: firstText,
-        secondText: secondText,
-      );
+        return TextData(
+            firstText: data['firstText'], secondText: data['secondText']);
+      });
+
+      // String firstText = await textCollection
+      //     .doc('firstText')
+      //     .get()
+      //     .then((doc) => doc.get('text'));
+      // String secondText = await textCollection
+      //     .doc('secondText')
+      //     .get()
+      //     .then((doc) => doc.get('text'));
+
+      // return TextData(
+      //   firstText: firstText,
+      //   secondText: secondText,
+      // );
     } catch (e) {
       print(e.toString());
       _showErrorToast(context,
           text:
               'Error Fetching Texts. Please reload and try again.\nIf you are already in the experiment, please exit then reload.');
+    }
+  }
+
+  Future updateTexts(String textOne, String textTwo) async {
+    try {
+      await textCollection.doc('texts').set(
+        {
+          'firstText': textOne,
+          'secondText': textTwo,
+        },
+      );
+    } catch (e) {
+      print(e);
+      return e;
     }
   }
 }
