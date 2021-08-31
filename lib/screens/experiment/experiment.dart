@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:html';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:reading_experiment/screens/experiment/exit_experiment.dart';
@@ -387,8 +388,12 @@ class FirstTextState extends State<FirstText> with WidgetsBindingObserver {
           Center(
             child: SingleChildScrollView(
               child: Center(
-                child: Text(texts?.firstText ??
-                    'Error Getting Text. Please exit the experiment and try again.'),
+                // TODO add check for group number to see if the text should be bold or not.
+                child: MarkdownBody(
+                  data: texts?.firstText ??
+                      'Error Getting Text. Please exit the experiment and try again.',
+                  selectable: false,
+                ),
               ),
             ),
           ),
@@ -541,8 +546,12 @@ class _SecondTextState extends State<SecondText> with WidgetsBindingObserver {
           Center(
             child: SingleChildScrollView(
               child: Center(
-                child: Text(texts?.secondText ??
-                    'Error Getting Text. Please exit the experiment and try again.'),
+                // TODO add check for group number to see if the text should be bold or not.
+                child: MarkdownBody(
+                  data: texts?.secondText ??
+                      'Error Getting Text. Please exit the experiment and try again.',
+                  selectable: false,
+                ),
               ),
             ),
           ),
