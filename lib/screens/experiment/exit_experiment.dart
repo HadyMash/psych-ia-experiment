@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:reading_experiment/main.dart';
 import 'package:reading_experiment/services/auth.dart';
 import 'package:reading_experiment/services/database.dart';
+import 'package:reading_experiment/shared/data.dart';
 
 class ExitExperiment extends StatefulWidget {
   const ExitExperiment({Key? key}) : super(key: key);
@@ -88,7 +89,10 @@ class _ExitExperimentState extends State<ExitExperiment> {
                                       await auth.deleteUserAndData(uid: uid);
 
                                   if (authResult == null) {
-                                    Navigator.of(context)
+                                    AppData.experimentNavKey.currentState!
+                                        .popUntil((route) => route.isFirst);
+
+                                    AppData.mainNavKey.currentState!
                                         .popUntil((route) => route.isFirst);
                                   } else {
                                     setState(() => loading = false);

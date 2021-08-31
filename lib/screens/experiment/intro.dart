@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:reading_experiment/screens/experiment/experiment.dart';
 import 'package:reading_experiment/services/auth.dart';
 import 'package:reading_experiment/services/database.dart';
+import 'package:reading_experiment/shared/data.dart';
 import 'package:reading_experiment/shared/experiment_progress.dart';
 
 void _showToast(BuildContext context) {
@@ -386,6 +387,7 @@ class _AreYouReadyState extends State<AreYouReady> {
                   value: groupNumber,
                   onChanged: (int? number) {
                     setState(() => groupNumber = number);
+                    AppData.groupNumber = number;
                   },
                   items: <int>[1, 2, 3].map<DropdownMenuItem<int>>(
                     (int number) {
@@ -440,5 +442,6 @@ Future<void> _popExperiment(BuildContext context) async {
   await database.deleteSession();
 
   await auth.deleteUser();
-  Navigator.of(context).popUntil((route) => route.isFirst);
+  AppData.experimentNavKey.currentState?.popUntil((route) => route.isFirst);
+  AppData.mainNavKey.currentState?.popUntil((route) => route.isFirst);
 }

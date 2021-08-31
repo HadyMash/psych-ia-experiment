@@ -6,6 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:reading_experiment/screens/experiment/exit_experiment.dart';
+import 'package:reading_experiment/screens/experiment/intro.dart';
+import 'package:reading_experiment/services/auth.dart';
+import 'package:reading_experiment/shared/data.dart';
 import 'package:reading_experiment/shared/experiment_progress.dart';
 import 'package:reading_experiment/shared/text_data.dart';
 
@@ -47,6 +50,39 @@ void _showToast(BuildContext context) {
     gravity: ToastGravity.TOP,
     toastDuration: const Duration(seconds: 3),
   );
+}
+
+class Experiment extends StatelessWidget {
+  final Widget? page;
+  const Experiment([this.page, Key? key]) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Navigator(
+      key: AppData.experimentNavKey,
+      // initialRoute: '/Dashboard',
+      onGenerateRoute: (RouteSettings route) {
+        return PageRouteBuilder(
+          transitionDuration: const Duration(milliseconds: 250),
+          pageBuilder: (BuildContext context, Animation<double> animation,
+              Animation<double> secondaryAnimation) {
+            return page ?? Agreement(uid: AuthService().getUser()!.uid);
+          },
+          transitionsBuilder: (BuildContext context,
+              Animation<double> animation,
+              Animation<double> secondaryAnimation,
+              Widget child) {
+            return Align(
+              child: FadeTransition(
+                opacity: animation,
+                child: child,
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 }
 
 class TimeIsUp extends StatefulWidget {

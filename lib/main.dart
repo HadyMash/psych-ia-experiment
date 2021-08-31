@@ -14,6 +14,7 @@ import 'package:reading_experiment/screens/experiment/finish.dart';
 import 'package:reading_experiment/screens/experiment/intro.dart';
 import 'package:reading_experiment/services/auth.dart';
 import 'package:reading_experiment/services/database.dart';
+import 'package:reading_experiment/shared/data.dart';
 import 'package:reading_experiment/shared/experiment_progress.dart';
 import 'package:reading_experiment/shared/text_data.dart';
 
@@ -50,8 +51,9 @@ class MyApp extends StatelessWidget {
       create: (_) => TextService().getTexts(context),
       initialData: null,
       lazy: false,
-      child: const MaterialApp(
-        home: Home(),
+      child: MaterialApp(
+        navigatorKey: AppData.mainNavKey,
+        home: const Home(),
       ),
     );
   }
@@ -115,53 +117,63 @@ class _HomeState extends State<Home> {
           ExperimentProgress? progress = await getExperimentProgress();
           if (progress == null) {
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => Agreement(uid: user.uid)));
+                builder: (context) => Experiment(Agreement(uid: user.uid))));
           } else {
             switch (progress) {
               case ExperimentProgress.agreement:
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Agreement(uid: user.uid)));
+                    builder: (context) =>
+                        Experiment(Agreement(uid: user.uid))));
                 break;
               case ExperimentProgress.experimentInfo:
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Explanation(uid: user.uid)));
+                    builder: (context) =>
+                        Experiment(Explanation(uid: user.uid))));
                 break;
               case ExperimentProgress.areYouReady:
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => AreYouReady(uid: user.uid)));
+                    builder: (context) =>
+                        Experiment(AreYouReady(uid: user.uid))));
                 break;
               case ExperimentProgress.firstText:
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => FirstText(uid: user.uid)));
+                    builder: (context) =>
+                        Experiment(FirstText(uid: user.uid))));
                 break;
               case ExperimentProgress.firstQuiz:
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => TimeIsUp(
-                    uid: user.uid,
-                    textNumber: 1,
+                  builder: (context) => Experiment(
+                    TimeIsUp(
+                      uid: user.uid,
+                      textNumber: 1,
+                    ),
                   ),
                 ));
                 break;
               case ExperimentProgress.secondText:
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => SecondText(uid: user.uid)));
+                    builder: (context) =>
+                        Experiment(SecondText(uid: user.uid))));
                 break;
               case ExperimentProgress.secondQuiz:
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => TimeIsUp(
-                    uid: user.uid,
-                    textNumber: 2,
+                  builder: (context) => Experiment(
+                    TimeIsUp(
+                      uid: user.uid,
+                      textNumber: 2,
+                    ),
                   ),
                 ));
                 break;
               case ExperimentProgress.finish:
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const Finish(),
+                  builder: (context) => const Experiment(Finish()),
                 ));
                 break;
               case ExperimentProgress.error:
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Agreement(uid: user.uid)));
+                    builder: (context) =>
+                        Experiment(Agreement(uid: user.uid))));
                 break;
             }
           }
@@ -195,7 +207,8 @@ class _HomeState extends State<Home> {
               await DatabaseService(uid: _auth.getUser()!.uid)
                   .makeSession(uid: _auth.getUser()!.uid);
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => Agreement(uid: result.uid.toString())));
+                  builder: (context) =>
+                      Experiment(Agreement(uid: result.uid.toString()))));
             } else {
               _showToast(context, text: _auth.getError(result.toString()));
             }
