@@ -128,14 +128,25 @@ class TextService {
   final String texts = 'texts';
 
   // get text
-  Future<TextData?> getTexts(BuildContext context) async {
+  Future<TextData?> getTexts(BuildContext context,
+      {void Function()? setFetching, void Function()? setNotFetching}) async {
     try {
-      return await textCollection.doc(texts).get().then((doc) {
+      if (setFetching != null) {
+        setFetching();
+      }
+
+      var result = await textCollection.doc(texts).get().then((doc) {
         var data = doc.data() as Map;
 
         return TextData(
             firstText: data['firstText'], secondText: data['secondText']);
       });
+
+      if (setNotFetching != null) {
+        setNotFetching();
+      }
+
+      return result;
     } catch (e) {
       print(e.toString());
       _showErrorToast(context,

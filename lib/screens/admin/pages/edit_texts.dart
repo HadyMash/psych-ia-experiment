@@ -16,6 +16,11 @@ class _EditTextsState extends State<EditTexts> {
 
   late Future<TextData?> textFuture;
 
+  bool _gettingTexts = false;
+
+  void _setFetching() => _gettingTexts = true;
+  void _setNotFetching() => _gettingTexts = false;
+
   late TextEditingController textOneController;
   late TextEditingController textTwoController;
   bool _controllersInitialised = false;
@@ -25,7 +30,11 @@ class _EditTextsState extends State<EditTexts> {
     super.initState();
     var textService = TextService();
 
-    textFuture = textService.getTexts(context);
+    textFuture = textService.getTexts(
+      context,
+      setFetching: _setFetching,
+      setNotFetching: _setNotFetching,
+    );
     textFuture.then((textData) {
       if (textData != null) {
         textOneController = TextEditingController(text: textData.firstText);
@@ -36,61 +45,70 @@ class _EditTextsState extends State<EditTexts> {
 
     textService.textUpdates.listen((textData) {
       print('updated');
-      if (_controllersInitialised) {
-        print('showing toast');
-        late FToast fToast;
-        fToast = FToast();
-        fToast.init(context);
+      if (!_gettingTexts) {
+        if (_controllersInitialised) {
+          print('showing toast');
+          late FToast fToast;
+          fToast = FToast();
+          fToast.init(context);
 
-        Widget toast = Container(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0),
-            color: Colors.grey[850],
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.7),
-                blurRadius: 10,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'The texts have been updated.',
-                style: TextStyle(color: Colors.white),
-              ),
-              const SizedBox(width: 15),
-              TextButton(
-                child: const Text('Show'),
-                onPressed: () => TextService().getTexts(context).then(
-                  (textData) {
-                    setState(() {
-                      if (textData != null) {
-                        textOneController.text = textData.firstText;
-                        textTwoController.text = textData.secondText;
-                        fToast.removeCustomToast();
-                      }
-                    });
-                  },
+          Widget toast = Container(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              color: Colors.grey[850],
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.7),
+                  blurRadius: 10,
+                  offset: const Offset(0, 3),
                 ),
-              ),
-              const SizedBox(width: 5),
-              TextButton(
-                child: const Text('Ok'),
-                onPressed: () => fToast.removeCustomToast(),
-              ),
-            ],
-          ),
-        );
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'The texts have been updated.',
+                  style: TextStyle(color: Colors.white),
+                ),
+                const SizedBox(width: 15),
+                TextButton(
+                  child: const Text('Show'),
+                  onPressed: () => TextService()
+                      .getTexts(
+                    context,
+                    setFetching: _setFetching,
+                    setNotFetching: _setNotFetching,
+                  )
+                      .then(
+                    (textData) {
+                      setState(() {
+                        if (textData != null) {
+                          textOneController.text = textData.firstText;
+                          textTwoController.text = textData.secondText;
+                          fToast.removeCustomToast();
+                        }
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(width: 5),
+                TextButton(
+                  child: const Text('Ok'),
+                  onPressed: () => fToast.removeCustomToast(),
+                ),
+              ],
+            ),
+          );
 
-        fToast.showToast(
-          child: toast,
-          gravity: ToastGravity.TOP,
-          toastDuration: const Duration(days: 1),
-        );
+          fToast.showToast(
+            child: toast,
+            gravity: ToastGravity.TOP,
+            toastDuration: const Duration(days: 1),
+          );
+        }
       }
     });
   }
@@ -111,7 +129,13 @@ class _EditTextsState extends State<EditTexts> {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh_rounded),
-            onPressed: () => TextService().getTexts(context).then(
+            onPressed: () => TextService()
+                .getTexts(
+              context,
+              setFetching: _setFetching,
+              setNotFetching: _setNotFetching,
+            )
+                .then(
               (textData) {
                 setState(() {
                   if (textData != null) {
@@ -304,6 +328,8 @@ class _EditTextsState extends State<EditTexts> {
                     ElevatedButton(
                       child: const Text('Submit'),
                       onPressed: () async {
+                        _setFetching();
+
                         if (_formKey.currentState != null) {
                           if (_formKey.currentState!.validate()) {
                             showDialog(
@@ -419,6 +445,7 @@ class _EditTextsState extends State<EditTexts> {
                             }
                           }
                         }
+                        _setNotFetching();
                       },
                     ),
                   ],
