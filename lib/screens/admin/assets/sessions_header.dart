@@ -37,6 +37,7 @@ class SessionsHeader extends StatelessWidget {
         const Flexible(flex: 1, child: Center(child: Text('Group'))),
         const Flexible(flex: 1, child: Center(child: Text('Lock Outs'))),
         const Flexible(flex: 1, child: Center(child: Text('Kick'))),
+        const Flexible(flex: 1, child: Center(child: Text('Notes'))),
       ],
     );
   }

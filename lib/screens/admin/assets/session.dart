@@ -122,6 +122,10 @@ class _SessionState extends State<Session> {
             flex: 1,
             child: Center(child: KickUser()),
           ),
+          const Flexible(
+            flex: 1,
+            child: Center(child: SessionNotes()),
+          ),
         ],
       ),
     );
@@ -148,6 +152,30 @@ class _KickUserState extends State<KickUser> {
         child: Icon(
           CupertinoIcons.xmark,
           color: Colors.red[700],
+        ),
+      ),
+    );
+  }
+}
+
+class SessionNotes extends StatefulWidget {
+  const SessionNotes({Key? key}) : super(key: key);
+
+  @override
+  _SessionNotesState createState() => _SessionNotesState();
+}
+
+class _SessionNotesState extends State<SessionNotes> {
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {},
+      borderRadius: BorderRadius.circular(5),
+      child: const Padding(
+        padding: EdgeInsets.all(5),
+        child: Icon(
+          Icons.note_alt_rounded,
+          color: Colors.black,
         ),
       ),
     );
