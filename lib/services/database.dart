@@ -3,7 +3,7 @@ import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:reading_experiment/shared/experiment_progress.dart';
-import 'package:reading_experiment/shared/note.dart';
+import 'package:reading_experiment/shared/note_data.dart';
 import 'package:reading_experiment/shared/session_data.dart';
 import 'package:reading_experiment/shared/text_data.dart';
 
@@ -119,16 +119,17 @@ class DatabaseService {
         }).toList();
       });
 
-  Stream<List<Note>> get notes => notesCollection.snapshots().map((snapshot) {
+  Stream<List<NoteData>> get notes =>
+      notesCollection.snapshots().map((snapshot) {
         return snapshot.docs.map((doc) {
-          return Note(id: doc.id, notes: (doc.data() as Map)['notes']);
+          return NoteData(id: doc.id, notes: (doc.data() as Map)['notes']);
         }).toList();
       });
 
-  Stream<Note?> get userKickStream =>
+  Stream<NoteData?> get userKickStream =>
       notesCollection.doc(uid).snapshots().map((doc) {
         if (doc.exists) {
-          return Note(
+          return NoteData(
             id: uid,
             kickReason: doc.get('kickReason'),
             kick: doc.get('kick'),
