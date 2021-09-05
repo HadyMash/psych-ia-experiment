@@ -202,6 +202,7 @@ class _KickUserState extends State<KickUser> {
                         userUID: widget.uid,
                         kickReason: kickReason ?? 'ERROR',
                       );
+                      Navigator.of(context).pop();
                     }
                   },
                 ),

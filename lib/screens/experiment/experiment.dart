@@ -65,53 +65,58 @@ class Experiment extends StatelessWidget {
         .listen((note) async {
       if (note != null) {
         if (note.kick == true) {
-          await AuthService()
-              .deleteUserAndData(uid: AuthService().getUser()!.uid);
-          AppData.mainNavKey.currentState!.popUntil((route) => route.isFirst);
-          Future.delayed(
-            const Duration(milliseconds: 500),
-            () => showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (context) {
-                return AlertDialog(
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10),
-                    ),
-                  ),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'You have been kicked',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 26,
+          showDialog(
+            useRootNavigator: false,
+            context: context,
+            barrierDismissible: false,
+            builder: (context) {
+              bool loading = false;
+              return StatefulBuilder(builder: (context, setState) {
+                return !loading
+                    ? AlertDialog(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      RichText(
-                          text: TextSpan(children: <TextSpan>[
-                        const TextSpan(
-                          text: 'Kick Reason: ',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'You have been kicked',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 26,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            RichText(
+                                text: TextSpan(children: <TextSpan>[
+                              const TextSpan(
+                                text: 'Kick Reason: ',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              TextSpan(text: note.kickReason),
+                            ])),
+                            const SizedBox(height: 20),
+                            ElevatedButton(
+                              child: const Text('Ok'),
+                              onPressed: () async {
+                                setState(() => loading = true);
+                                await AuthService().deleteUserAndData(
+                                    uid: AuthService().getUser()!.uid);
+                                AppData.mainNavKey.currentState!
+                                    .popUntil((route) => route.isFirst);
+                              },
+                            ),
+                          ],
                         ),
-                        TextSpan(text: note.kickReason),
-                      ])),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        child: const Text('Ok'),
-                        onPressed: () =>
-                            AppData.mainNavKey.currentState!.pop(context),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
+                      )
+                    : const Center(child: CircularProgressIndicator());
+              });
+            },
           );
         }
       }
