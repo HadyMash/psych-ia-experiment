@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:reading_experiment/screens/experiment/exit_experiment.dart';
 import 'package:reading_experiment/screens/experiment/intro.dart';
 import 'package:reading_experiment/services/auth.dart';
+import 'package:reading_experiment/services/database.dart';
 import 'package:reading_experiment/shared/data.dart';
 import 'package:reading_experiment/shared/experiment_progress.dart';
 import 'package:reading_experiment/shared/text_data.dart';
@@ -59,6 +60,63 @@ class Experiment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DatabaseService(uid: AuthService().getUser()!.uid)
+        .userKickStream
+        .listen((note) async {
+      if (note != null) {
+        if (note.kick == true) {
+          await AuthService()
+              .deleteUserAndData(uid: AuthService().getUser()!.uid);
+          AppData.mainNavKey.currentState!.popUntil((route) => route.isFirst);
+          Future.delayed(
+            const Duration(milliseconds: 500),
+            () => showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) {
+                return AlertDialog(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                  ),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'You have been kicked',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 26,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      RichText(
+                          text: TextSpan(children: <TextSpan>[
+                        const TextSpan(
+                          text: 'Kick Reason: ',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        TextSpan(text: note.kickReason),
+                      ])),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        child: const Text('Ok'),
+                        onPressed: () =>
+                            AppData.mainNavKey.currentState!.pop(context),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          );
+        }
+      }
+    });
+
     return Navigator(
       key: AppData.experimentNavKey,
       // initialRoute: '/Dashboard',

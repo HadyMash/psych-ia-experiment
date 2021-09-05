@@ -437,7 +437,7 @@ Future<void> _popExperiment(BuildContext context) async {
 
   await setExperimentProgress(ExperimentProgress.agreement);
 
-  await database.removeUserConsent(context, uid: auth.getUser()!.uid);
+  await database.removeUserConsent(context: context, uid: auth.getUser()!.uid);
 
   await database.deleteSession();
 

@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:reading_experiment/services/auth.dart';
+import 'package:reading_experiment/services/database.dart';
 import 'package:reading_experiment/shared/experiment_progress.dart';
 
 class Session extends StatefulWidget {
@@ -118,9 +120,9 @@ class _SessionState extends State<Session> {
             ),
           ),
           // Controls
-          const Flexible(
+          Flexible(
             flex: 1,
-            child: Center(child: KickUser()),
+            child: Center(child: KickUser(widget.uid)),
           ),
           const Flexible(
             flex: 1,
@@ -133,7 +135,8 @@ class _SessionState extends State<Session> {
 }
 
 class KickUser extends StatefulWidget {
-  const KickUser({Key? key}) : super(key: key);
+  final String uid;
+  const KickUser(this.uid, {Key? key}) : super(key: key);
 
   @override
   _KickUserState createState() => _KickUserState();
@@ -145,7 +148,68 @@ class _KickUserState extends State<KickUser> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () => showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10),
+            ),
+          ),
+          content: StatefulBuilder(builder: (context, setState) {
+            final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+            String? kickReason;
+
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Kick ${widget.uid}?'),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: Form(
+                    key: formKey,
+                    child: TextFormField(
+                      onChanged: (val) => kickReason = val,
+                      maxLines: null,
+                      expands: true,
+                      textAlign: TextAlign.start,
+                      textAlignVertical: TextAlignVertical.top,
+                      validator: (val) =>
+                          (val ?? '').isEmpty ? 'Reason cannot be empty' : null,
+                      decoration: InputDecoration(
+                        fillColor: Colors.grey[300],
+                        filled: true,
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 15),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                        hintText: "Lorem ipsum",
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  child: const Text('Kick'),
+                  onPressed: () async {
+                    if (formKey.currentState!.validate()) {
+                      await DatabaseService(uid: AuthService().getUser()!.uid)
+                          .kickUser(
+                        userUID: widget.uid,
+                        kickReason: kickReason ?? 'ERROR',
+                      );
+                    }
+                  },
+                ),
+              ],
+            );
+          }),
+        ),
+      ),
       borderRadius: BorderRadius.circular(5),
       child: Padding(
         padding: const EdgeInsets.all(5),

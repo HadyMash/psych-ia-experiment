@@ -75,8 +75,9 @@ class _ExitExperimentState extends State<ExitExperiment> {
                               var database = DatabaseService(uid: uid);
 
                               // remove user consent
-                              dynamic consentResult = await database
-                                  .removeUserConsent(context, uid: uid);
+                              dynamic consentResult =
+                                  await database.removeUserConsent(
+                                      context: context, uid: uid);
 
                               if (consentResult == null) {
                                 // TODO delete user session

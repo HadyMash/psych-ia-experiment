@@ -3,6 +3,7 @@ import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:reading_experiment/shared/experiment_progress.dart';
+import 'package:reading_experiment/shared/note.dart';
 import 'package:reading_experiment/shared/session_data.dart';
 import 'package:reading_experiment/shared/text_data.dart';
 
@@ -16,6 +17,8 @@ class DatabaseService {
 
   final CollectionReference sessionCollection =
       FirebaseFirestore.instance.collection('sessions');
+  final CollectionReference notesCollection =
+      FirebaseFirestore.instance.collection('notes');
 
   // * Participant
 
@@ -35,12 +38,14 @@ class DatabaseService {
   }
 
   // remove user from consent
-  Future removeUserConsent(BuildContext context, {required String uid}) async {
+  Future removeUserConsent({BuildContext? context, required String uid}) async {
     try {
       await consentCollection.doc(uid).delete();
     } catch (e) {
       print(e.toString());
-      _showErrorToast(context, text: e.toString());
+      if (context != null) {
+        _showErrorToast(context, text: e.toString());
+      }
       return e;
     }
   }
@@ -113,6 +118,36 @@ class DatabaseService {
           );
         }).toList();
       });
+
+  Stream<List<Note>> get notes => notesCollection.snapshots().map((snapshot) {
+        return snapshot.docs.map((doc) {
+          return Note(id: doc.id, notes: (doc.data() as Map)['notes']);
+        }).toList();
+      });
+
+  Stream<Note?> get userKickStream =>
+      notesCollection.doc(uid).snapshots().map((doc) {
+        if (doc.exists) {
+          return Note(
+            id: uid,
+            kickReason: doc.get('kickReason'),
+            kick: doc.get('kick'),
+          );
+        }
+      });
+
+  Future kickUser({required String userUID, required String kickReason}) async {
+    try {
+      await notesCollection.doc(userUID).set({
+        'id': userUID,
+        'kick': true,
+        'kickReason': kickReason,
+      });
+    } catch (e) {
+      print(e.toString());
+      return e;
+    }
+  }
 }
 
 enum TextNumber {

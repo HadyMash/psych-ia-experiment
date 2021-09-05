@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:reading_experiment/services/database.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -46,6 +47,12 @@ class AuthService {
     try {
       // delete answers
 
+      // delete user data
+      DatabaseService database = DatabaseService(uid: _auth.currentUser!.uid);
+
+      await database.removeUserConsent(uid: _auth.currentUser!.uid);
+
+      await database.deleteSession();
       // delete user
       await deleteUser();
 
