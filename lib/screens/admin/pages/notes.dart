@@ -11,14 +11,14 @@ class Notes extends StatefulWidget {
 }
 
 class _NotesState extends State<Notes> {
-  List<Widget> _buildNotes(List<String> notes) {
-    var widgets = <Widget>[];
+  // List<Widget> _buildNotes(List<String> notes) {
+  //   var widgets = <Widget>[];
 
-    for (var note in notes) {
-      widgets.add(Text(note));
-    }
-    return widgets;
-  }
+  //   for (var note in notes) {
+  //     widgets.add(Text(note));
+  //   }
+  //   return widgets;
+  // }
 
   final stream = DatabaseService(uid: AuthService().getUser()!.uid).notes;
 
