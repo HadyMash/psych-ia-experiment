@@ -38,7 +38,7 @@ class _AdminPanelState extends State<AdminPanel> {
                   UnlockRequests(),
                   EditTexts(),
                   Discovery(),
-                  Notes(),
+                  // Notes(),
                 ],
               ),
             ),
