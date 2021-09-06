@@ -14,9 +14,9 @@ class _NotesState extends State<Notes> {
   List<Widget> _buildNotes(List<String> notes) {
     var widgets = <Widget>[];
 
-    notes.forEach((element) {
-      widgets.add(Text(element));
-    });
+    for (var note in notes) {
+      widgets.add(Text(note));
+    }
     return widgets;
   }
 
@@ -29,6 +29,14 @@ class _NotesState extends State<Notes> {
       appBar: AppBar(
         title: const Text('Notes'),
         automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add_rounded, color: Colors.white),
+            onPressed: () {
+              // TODO add note functionality
+            },
+          ),
+        ],
       ),
       body: StreamBuilder<List<NoteData>?>(
           stream: stream,
@@ -55,7 +63,6 @@ class _NotesState extends State<Notes> {
                       title: Text(note.id),
                     ),
                     body: ListTile(
-                      title: Text(note.id),
                       subtitle: Column(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -69,15 +76,15 @@ class _NotesState extends State<Notes> {
                           note.kickReason == null
                               ? Container()
                               : Text('Kick Reason: ${note.kickReason}'),
-                          note.notes == null
-                              ? Container()
-                              : const Text('Notes:'),
-                          note.notes == null
-                              ? Container()
-                              : Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: _buildNotes(note.notes!),
-                                )
+                          // note.notes == null
+                          //     ? Container()
+                          //     : const Text('Notes:'),
+                          // // note.notes == null
+                          // //     ? Container()
+                          // //     : Column(
+                          // //         mainAxisSize: MainAxisSize.min,
+                          // //         children: _buildNotes(note.notes!),
+                          // //       )
                         ],
                       ),
                     ),

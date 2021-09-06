@@ -127,7 +127,7 @@ class DatabaseService {
             author: (doc.data() as Map)['author'],
             kick: (doc.data() as Map)['kick'],
             kickReason: (doc.data() as Map)['kickReason'],
-            notes: (doc.data() as Map)['notes'],
+            notes: (doc.data() as Map)['userNotes'],
           );
         }).toList();
       });

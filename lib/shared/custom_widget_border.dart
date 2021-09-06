@@ -6,7 +6,7 @@ class CustomWidgetBorder extends OutlineInputBorder {
 
   CustomWidgetBorder({required this.color, required this.width})
       : super(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
           borderSide: BorderSide(
             color: color!,
             width: width,
