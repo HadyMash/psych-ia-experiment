@@ -122,7 +122,13 @@ class DatabaseService {
   Stream<List<NoteData>> get notes =>
       notesCollection.snapshots().map((snapshot) {
         return snapshot.docs.map((doc) {
-          return NoteData(id: doc.id, notes: (doc.data() as Map)['notes']);
+          return NoteData(
+            id: doc.id,
+            author: (doc.data() as Map)['author'],
+            kick: (doc.data() as Map)['kick'],
+            kickReason: (doc.data() as Map)['kickReason'],
+            notes: (doc.data() as Map)['notes'],
+          );
         }).toList();
       });
 

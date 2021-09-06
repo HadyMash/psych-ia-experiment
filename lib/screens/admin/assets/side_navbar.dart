@@ -162,6 +162,19 @@ class _SideNavigationBarState extends State<SideNavigationBar> {
                       widget.onChange(selectedIndex);
                     },
                   ),
+                  PageIcon.tooltip(
+                    label: 'Notes',
+                    tooltip: 'Notes - View User Notes',
+                    selected: selectedIndex == 5,
+                    expanded: navBarExpanded,
+                    icon: Icons.note_alt_rounded,
+                    height: itemHeight,
+                    width: navBarWidth,
+                    onTap: () {
+                      setState(() => selectedIndex = 5);
+                      widget.onChange(selectedIndex);
+                    },
+                  ),
                 ],
               ),
               const Spacer(),
