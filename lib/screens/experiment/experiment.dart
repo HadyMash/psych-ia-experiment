@@ -305,9 +305,11 @@ class _ExperimentAppBarState extends State<ExperimentAppBar>
     });
 
     controller.addStatusListener(
-      (AnimationStatus status) {
+      (AnimationStatus status) async {
         if (status == AnimationStatus.completed) {
           widget.onTimeFinish();
+          var instance = await SharedPreferences.getInstance();
+          instance.remove('experimentAppBarProgress');
         }
       },
     );

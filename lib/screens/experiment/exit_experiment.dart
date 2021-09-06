@@ -75,9 +75,11 @@ class _ExitExperimentState extends State<ExitExperiment> {
                               var uid = auth.getUser()!.uid;
                               var database = DatabaseService(uid: uid);
 
+                              // remove time left so that the next screen doesn't start at 0.
                               var instance =
                                   await SharedPreferences.getInstance();
                               instance.remove('experimentAppBarProgress');
+
                               // remove user consent
                               dynamic consentResult =
                                   await database.removeUserConsent(
