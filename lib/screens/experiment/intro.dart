@@ -389,7 +389,7 @@ class _AreYouReadyState extends State<AreYouReady> {
                     setState(() => groupNumber = number);
                     AppData.groupNumber = number;
                   },
-                  items: <int>[1, 2, 3].map<DropdownMenuItem<int>>(
+                  items: <int>[1, 2].map<DropdownMenuItem<int>>(
                     (int number) {
                       return DropdownMenuItem<int>(
                         value: number,
