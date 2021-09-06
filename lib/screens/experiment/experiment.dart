@@ -13,6 +13,7 @@ import 'package:reading_experiment/services/database.dart';
 import 'package:reading_experiment/shared/data.dart';
 import 'package:reading_experiment/shared/experiment_progress.dart';
 import 'package:reading_experiment/shared/text_data.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void _showToast(BuildContext context) {
   late FToast fToast;
@@ -245,7 +246,6 @@ class _TimeIsUpState extends State<TimeIsUp> {
   }
 }
 
-// TODO use shared preferences to save the time left
 class ExperimentAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
   final String uid;
@@ -279,6 +279,16 @@ class _ExperimentAppBarState extends State<ExperimentAppBar>
     }
   }
 
+  void _updateController() async {
+    var instance = await SharedPreferences.getInstance();
+    double? value = instance.getDouble('experimentAppBarProgress');
+
+    if (value != null) {
+      controller.value = value;
+      controller.forward();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -286,6 +296,13 @@ class _ExperimentAppBarState extends State<ExperimentAppBar>
       vsync: this,
       duration: widget.duration ?? const Duration(minutes: 3),
     );
+
+    _updateController();
+
+    controller.addListener(() async {
+      var instance = await SharedPreferences.getInstance();
+      instance.setDouble('experimentAppBarProgress', controller.value);
+    });
 
     controller.addStatusListener(
       (AnimationStatus status) {

@@ -4,6 +4,7 @@ import 'package:reading_experiment/main.dart';
 import 'package:reading_experiment/services/auth.dart';
 import 'package:reading_experiment/services/database.dart';
 import 'package:reading_experiment/shared/data.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ExitExperiment extends StatefulWidget {
   const ExitExperiment({Key? key}) : super(key: key);
@@ -74,6 +75,9 @@ class _ExitExperimentState extends State<ExitExperiment> {
                               var uid = auth.getUser()!.uid;
                               var database = DatabaseService(uid: uid);
 
+                              var instance =
+                                  await SharedPreferences.getInstance();
+                              instance.remove('experimentAppBarProgress');
                               // remove user consent
                               dynamic consentResult =
                                   await database.removeUserConsent(
