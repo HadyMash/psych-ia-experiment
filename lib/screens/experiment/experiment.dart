@@ -451,11 +451,17 @@ class FirstTextState extends State<FirstText> with WidgetsBindingObserver {
           Center(
             child: SingleChildScrollView(
               child: Center(
-                // TODO add check for group number to see if the text should be bold or not.
                 child: MarkdownBody(
                   data: texts?.firstText ??
                       'Error Getting Text. Please exit the experiment and try again.',
                   selectable: false,
+                  styleSheet: MarkdownStyleSheet(
+                    strong: TextStyle(
+                      fontWeight: (AppData.groupNumber ?? 1) == 1
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -609,11 +615,17 @@ class _SecondTextState extends State<SecondText> with WidgetsBindingObserver {
           Center(
             child: SingleChildScrollView(
               child: Center(
-                // TODO add check for group number to see if the text should be bold or not.
                 child: MarkdownBody(
                   data: texts?.secondText ??
                       'Error Getting Text. Please exit the experiment and try again.',
                   selectable: false,
+                  styleSheet: MarkdownStyleSheet(
+                    strong: TextStyle(
+                      fontWeight: (AppData.groupNumber ?? 1) == 1
+                          ? FontWeight.normal
+                          : FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
             ),

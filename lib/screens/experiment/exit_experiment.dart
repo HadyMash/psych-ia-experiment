@@ -80,7 +80,6 @@ class _ExitExperimentState extends State<ExitExperiment> {
                                       context: context, uid: uid);
 
                               if (consentResult == null) {
-                                // TODO delete user session
                                 // ignore: avoid_init_to_null
                                 dynamic sessionResult =
                                     await database.deleteSession();
