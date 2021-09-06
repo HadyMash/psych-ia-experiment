@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:reading_experiment/screens/admin/assets/side_navbar.dart';
 import 'package:reading_experiment/screens/admin/pages/dashboard.dart';
 import 'package:reading_experiment/screens/admin/pages/discovery.dart';
-import 'package:reading_experiment/screens/admin/pages/notes.dart';
+// import 'package:reading_experiment/screens/admin/pages/notes.dart';
 import 'package:reading_experiment/screens/admin/pages/participants.dart';
 import 'package:reading_experiment/screens/admin/pages/edit_texts.dart';
 import 'package:reading_experiment/screens/admin/pages/unlock_requests.dart';
