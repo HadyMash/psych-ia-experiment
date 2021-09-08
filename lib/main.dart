@@ -17,6 +17,7 @@ import 'package:reading_experiment/services/database.dart';
 import 'package:reading_experiment/shared/data.dart';
 import 'package:reading_experiment/shared/experiment_progress.dart';
 import 'package:reading_experiment/shared/text_data.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // TODO add a check for internet connectivity
 void main() async {
@@ -196,6 +197,9 @@ class _HomeState extends State<Home> {
         child: ElevatedButton(
           child: const Text('Get Started'),
           onPressed: () async {
+            var instance = await SharedPreferences.getInstance();
+            await instance.remove('experimentAppBarProgress');
+
             final AuthService _auth = AuthService();
             dynamic currentUser = _auth.getUser();
             if (currentUser != null) {

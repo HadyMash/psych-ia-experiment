@@ -123,6 +123,17 @@ class DatabaseService {
         }).toList();
       });
 
+  Future _incrementLockouts(String uid) async {
+    try {
+      await sessionCollection.doc(uid).update({
+        'lockOuts': FieldValue.increment(1),
+      });
+    } catch (e) {
+      print(e.toString());
+      return e;
+    }
+  }
+
   Stream<List<NoteData>> get notes =>
       notesCollection.snapshots().map((snapshot) {
         return snapshot.docs.map((doc) {
@@ -199,6 +210,7 @@ class DatabaseService {
     try {
       var doc = unlockRequestsCollection.doc();
       await doc.set({'uid': data.uid, 'reason': data.reason, 'unlock': false});
+      await _incrementLockouts(data.uid);
       return doc.id;
     } catch (e) {
       print(e.toString());

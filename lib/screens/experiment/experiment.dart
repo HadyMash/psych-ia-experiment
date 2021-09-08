@@ -126,13 +126,13 @@ class ExperimentAppBar extends StatefulWidget implements PreferredSizeWidget {
   }) : super(key: key);
 
   @override
-  _ExperimentAppBarState createState() => _ExperimentAppBarState();
+  ExperimentAppBarState createState() => ExperimentAppBarState();
 
   @override
   Size get preferredSize => const Size.fromHeight(56.0);
 }
 
-class _ExperimentAppBarState extends State<ExperimentAppBar>
+class ExperimentAppBarState extends State<ExperimentAppBar>
     with SingleTickerProviderStateMixin {
   late AnimationController controller;
 
@@ -154,6 +154,15 @@ class _ExperimentAppBarState extends State<ExperimentAppBar>
       controller.forward();
     }
   }
+
+  // ignore: prefer_function_declarations_over_variables
+  late void Function() pauseTimer = () {
+    controller.stop();
+  };
+  // ignore: prefer_function_declarations_over_variables
+  late void Function() unpauseTimer = () {
+    controller.forward();
+  };
 
   @override
   void initState() {
@@ -268,6 +277,8 @@ class FirstText extends StatefulWidget {
 
 class FirstTextState extends State<FirstText> with WidgetsBindingObserver {
   bool active = true;
+  final GlobalKey<ExperimentAppBarState> _experimentAppBarKey =
+      GlobalKey<ExperimentAppBarState>();
 
   @override
   void initState() {
@@ -280,6 +291,10 @@ class FirstTextState extends State<FirstText> with WidgetsBindingObserver {
       window.addEventListener('blur', onBlur);
     } else {
       WidgetsBinding.instance!.addObserver(this);
+    }
+
+    if (AppData.locked) {
+      _showCheatingPopup(context, null, _experimentAppBarKey);
     }
   }
 
@@ -310,7 +325,7 @@ class FirstTextState extends State<FirstText> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     print(state);
-    _showCheatingPopup(context, state);
+    _showCheatingPopup(context, state, _experimentAppBarKey);
   }
 
   @override
@@ -319,6 +334,7 @@ class FirstTextState extends State<FirstText> with WidgetsBindingObserver {
 
     return Scaffold(
       appBar: ExperimentAppBar(
+        key: _experimentAppBarKey,
         title: 'First Text',
         uid: widget.uid,
         onTimeFinish: () {
@@ -734,9 +750,16 @@ class Experiment extends StatelessWidget {
   }
 }
 
-void _showCheatingPopup(BuildContext context, AppLifecycleState state) {
-  if (AppData.locked == false && state == AppLifecycleState.paused) {
+void _showCheatingPopup(BuildContext context, AppLifecycleState? state,
+    [GlobalKey<ExperimentAppBarState>? key, bool? ignoreAppDataLockedValue]) {
+  if ((AppData.locked == false && state == AppLifecycleState.paused) ||
+      (ignoreAppDataLockedValue ?? false)) {
     AppData.locked = true;
+
+    if (key != null) {
+      key.currentState!.pauseTimer();
+    }
+
     // show cheating pop up
     showDialog(
         context: context,
@@ -807,9 +830,8 @@ void _showCheatingPopup(BuildContext context, AppLifecycleState state) {
                               ElevatedButton(
                                 child: const Text('Submit'),
                                 onPressed: () async {
-                                  setState(() => loading = true);
-
                                   if (formKey.currentState!.validate()) {
+                                    setState(() => loading = true);
                                     String uid = AuthService().getUser()!.uid;
                                     dynamic result =
                                         await DatabaseService(uid: uid)
@@ -828,6 +850,9 @@ void _showCheatingPopup(BuildContext context, AppLifecycleState state) {
                                         if (data != null &&
                                             data.unlock == true) {
                                           AppData.locked = false;
+                                          if (key != null) {
+                                            key.currentState!.unpauseTimer();
+                                          }
                                           Navigator.pop(context);
                                         }
                                       });
@@ -838,16 +863,19 @@ void _showCheatingPopup(BuildContext context, AppLifecycleState state) {
                             ],
                           ),
                         )
-                      : SizedBox(
-                          height: 100,
-                          width: 100,
-                          child: Center(
-                            child: Column(
-                              children: [
-                                const Text('Your request has been submitted'),
-                                const SizedBox(height: 20),
-                                Text('uid: ${AuthService().getUser()!.uid}'),
-                              ],
+                      : Material(
+                          color: Colors.transparent,
+                          child: SizedBox(
+                            height: 100,
+                            width: 100,
+                            child: Center(
+                              child: Column(
+                                children: [
+                                  const Text('Your request has been submitted'),
+                                  const SizedBox(height: 20),
+                                  Text('uid: ${AuthService().getUser()!.uid}'),
+                                ],
+                              ),
                             ),
                           ),
                         ))
