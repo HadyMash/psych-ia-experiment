@@ -13,142 +13,8 @@ import 'package:reading_experiment/services/database.dart';
 import 'package:reading_experiment/shared/data.dart';
 import 'package:reading_experiment/shared/experiment_progress.dart';
 import 'package:reading_experiment/shared/text_data.dart';
+import 'package:reading_experiment/shared/unlock_request_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-void _showToast(BuildContext context) {
-  late FToast fToast;
-  fToast = FToast();
-  fToast.init(context);
-
-  Widget toast = Container(
-    padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(10.0),
-      color: Colors.grey[850],
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.7),
-          blurRadius: 10,
-          offset: const Offset(0, 3),
-        ),
-      ],
-    ),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(Icons.check_circle_rounded, color: Colors.green[700]),
-        const SizedBox(
-          width: 12.0,
-        ),
-        const Text(
-          'Copied to Clipboard',
-          style: TextStyle(color: Colors.white),
-        ),
-      ],
-    ),
-  );
-
-  fToast.showToast(
-    child: toast,
-    gravity: ToastGravity.TOP,
-    toastDuration: const Duration(seconds: 3),
-  );
-}
-
-class Experiment extends StatelessWidget {
-  final Widget? page;
-  const Experiment([this.page, Key? key]) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    DatabaseService(uid: AuthService().getUser()!.uid)
-        .userKickStream
-        .listen((note) async {
-      if (note != null) {
-        if (note.kick == true) {
-          showDialog(
-            useRootNavigator: false,
-            context: context,
-            barrierDismissible: false,
-            builder: (context) {
-              bool loading = false;
-              return StatefulBuilder(builder: (context, setState) {
-                return !loading
-                    ? AlertDialog(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                        ),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text(
-                              'You have been kicked',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 26,
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            RichText(
-                                text: TextSpan(children: <TextSpan>[
-                              const TextSpan(
-                                text: 'Kick Reason: ',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              TextSpan(text: note.kickReason),
-                            ])),
-                            const SizedBox(height: 20),
-                            ElevatedButton(
-                              child: const Text('Ok'),
-                              onPressed: () async {
-                                setState(() => loading = true);
-                                await AuthService().deleteUserAndData(
-                                    uid: AuthService().getUser()!.uid);
-                                AppData.mainNavKey.currentState!
-                                    .popUntil((route) => route.isFirst);
-                              },
-                            ),
-                          ],
-                        ),
-                      )
-                    : const Center(child: CircularProgressIndicator());
-              });
-            },
-          );
-        }
-      }
-    });
-
-    return Navigator(
-      key: AppData.experimentNavKey,
-      // initialRoute: '/Dashboard',
-      onGenerateRoute: (RouteSettings route) {
-        return PageRouteBuilder(
-          transitionDuration: const Duration(milliseconds: 250),
-          pageBuilder: (BuildContext context, Animation<double> animation,
-              Animation<double> secondaryAnimation) {
-            return page ?? Agreement(uid: AuthService().getUser()!.uid);
-          },
-          transitionsBuilder: (BuildContext context,
-              Animation<double> animation,
-              Animation<double> secondaryAnimation,
-              Widget child) {
-            return Align(
-              child: FadeTransition(
-                opacity: animation,
-                child: child,
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-}
 
 class TimeIsUp extends StatefulWidget {
   final String uid;
@@ -444,6 +310,7 @@ class FirstTextState extends State<FirstText> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     print(state);
+    _showCheatingPopup(context, state);
   }
 
   @override
@@ -540,6 +407,7 @@ class _FirstQuizState extends State<FirstQuiz> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    // TODO implement cheating prevention
     print(state);
   }
 
@@ -616,6 +484,7 @@ class _SecondTextState extends State<SecondText> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    // TODO implement cheating prevention
     print(state);
   }
 
@@ -704,6 +573,7 @@ class _SecondQuizState extends State<SecondQuiz> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    // TODO implement cheating prevention
     print(state);
   }
 
@@ -726,5 +596,270 @@ class _SecondQuizState extends State<SecondQuiz> with WidgetsBindingObserver {
         ],
       ),
     );
+  }
+}
+
+void _showToast(BuildContext context) {
+  late FToast fToast;
+  fToast = FToast();
+  fToast.init(context);
+
+  Widget toast = Container(
+    padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(10.0),
+      color: Colors.grey[850],
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.7),
+          blurRadius: 10,
+          offset: const Offset(0, 3),
+        ),
+      ],
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.check_circle_rounded, color: Colors.green[700]),
+        const SizedBox(
+          width: 12.0,
+        ),
+        const Text(
+          'Copied to Clipboard',
+          style: TextStyle(color: Colors.white),
+        ),
+      ],
+    ),
+  );
+
+  fToast.showToast(
+    child: toast,
+    gravity: ToastGravity.TOP,
+    toastDuration: const Duration(seconds: 3),
+  );
+}
+
+class Experiment extends StatelessWidget {
+  final Widget? page;
+  const Experiment([this.page, Key? key]) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    DatabaseService(uid: AuthService().getUser()!.uid)
+        .userKickStream
+        .listen((note) async {
+      if (note != null) {
+        if (note.kick == true) {
+          showDialog(
+            useRootNavigator: false,
+            context: context,
+            barrierDismissible: false,
+            builder: (context) {
+              bool loading = false;
+              return StatefulBuilder(builder: (context, setState) {
+                return !loading
+                    ? AlertDialog(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                        ),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'You have been kicked',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 26,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            RichText(
+                                text: TextSpan(children: <TextSpan>[
+                              const TextSpan(
+                                text: 'Kick Reason: ',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              TextSpan(text: note.kickReason),
+                            ])),
+                            const SizedBox(height: 20),
+                            ElevatedButton(
+                              child: const Text('Ok'),
+                              onPressed: () async {
+                                setState(() => loading = true);
+                                await AuthService().deleteUserAndData(
+                                    uid: AuthService().getUser()!.uid);
+                                AppData.mainNavKey.currentState!
+                                    .popUntil((route) => route.isFirst);
+                              },
+                            ),
+                          ],
+                        ),
+                      )
+                    : const Center(child: CircularProgressIndicator());
+              });
+            },
+          );
+        }
+      }
+    });
+
+    return Navigator(
+      key: AppData.experimentNavKey,
+      // initialRoute: '/Dashboard',
+      onGenerateRoute: (RouteSettings route) {
+        return PageRouteBuilder(
+          transitionDuration: const Duration(milliseconds: 250),
+          pageBuilder: (BuildContext context, Animation<double> animation,
+              Animation<double> secondaryAnimation) {
+            return page ?? Agreement(uid: AuthService().getUser()!.uid);
+          },
+          transitionsBuilder: (BuildContext context,
+              Animation<double> animation,
+              Animation<double> secondaryAnimation,
+              Widget child) {
+            return Align(
+              child: FadeTransition(
+                opacity: animation,
+                child: child,
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+void _showCheatingPopup(BuildContext context, AppLifecycleState state) {
+  if (AppData.locked == false && state == AppLifecycleState.paused) {
+    AppData.locked = true;
+    // show cheating pop up
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        barrierColor: Colors.white,
+        useRootNavigator: false,
+        builder: (context) {
+          bool loading = false;
+          bool requestSubmitted = false;
+
+          var formKey = GlobalKey<FormState>();
+          String? reason;
+
+          return SizedBox(
+            height: MediaQuery.of(context).size.height * 0.6,
+            child: StatefulBuilder(builder: (context, setState) {
+              return !loading
+                  ? (!requestSubmitted
+                      ? AlertDialog(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                'You have been locked out',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 26,
+                                ),
+                              ),
+                              const SizedBox(height: 15),
+                              const Text('Please provide a reason:'),
+                              const SizedBox(height: 20),
+                              Expanded(
+                                child: Form(
+                                  key: formKey,
+                                  child: TextFormField(
+                                    onChanged: (val) => reason = val,
+                                    maxLines: null,
+                                    expands: true,
+                                    textAlign: TextAlign.start,
+                                    textAlignVertical: TextAlignVertical.top,
+                                    validator: (val) => (val ?? '').isEmpty
+                                        ? 'Reason cannot be empty'
+                                        : null,
+                                    decoration: InputDecoration(
+                                      fillColor: Colors.grey[300],
+                                      filled: true,
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 10, horizontal: 15),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                      hintText: "Lorem ipsum",
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              ElevatedButton(
+                                child: const Text('Submit'),
+                                onPressed: () async {
+                                  setState(() => loading = true);
+
+                                  if (formKey.currentState!.validate()) {
+                                    String uid = AuthService().getUser()!.uid;
+                                    dynamic result =
+                                        await DatabaseService(uid: uid)
+                                            .addUnlockRequest(UnlockRequestData(
+                                                uid: uid, reason: reason));
+
+                                    setState(() => loading = false);
+
+                                    if (result is String) {
+                                      setState(() => requestSubmitted = true);
+                                      var stream = DatabaseService(
+                                              uid: AuthService().getUser()!.uid)
+                                          .userUnlockRequest(result);
+
+                                      stream.listen((UnlockRequestData? data) {
+                                        if (data != null &&
+                                            data.unlock == true) {
+                                          AppData.locked = false;
+                                          Navigator.pop(context);
+                                        }
+                                      });
+                                    }
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                        )
+                      : SizedBox(
+                          height: 100,
+                          width: 100,
+                          child: Center(
+                            child: Column(
+                              children: [
+                                const Text('Your request has been submitted'),
+                                const SizedBox(height: 20),
+                                Text('uid: ${AuthService().getUser()!.uid}'),
+                              ],
+                            ),
+                          ),
+                        ))
+                  : const SizedBox(
+                      height: 100,
+                      width: 100,
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+            }),
+          );
+        });
   }
 }

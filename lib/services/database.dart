@@ -2,10 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:reading_experiment/screens/admin/pages/unlock_requests.dart';
 import 'package:reading_experiment/shared/experiment_progress.dart';
 import 'package:reading_experiment/shared/note_data.dart';
 import 'package:reading_experiment/shared/session_data.dart';
 import 'package:reading_experiment/shared/text_data.dart';
+import 'package:reading_experiment/shared/unlock_request_data.dart';
 
 class DatabaseService {
   final String uid;
@@ -19,6 +21,8 @@ class DatabaseService {
       FirebaseFirestore.instance.collection('sessions');
   final CollectionReference notesCollection =
       FirebaseFirestore.instance.collection('notes');
+  final CollectionReference unlockRequestsCollection =
+      FirebaseFirestore.instance.collection('unlockRequests');
 
   // * Participant
 
@@ -149,6 +153,63 @@ class DatabaseService {
         'id': userUID,
         'kick': true,
         'kickReason': kickReason,
+      });
+    } catch (e) {
+      print(e.toString());
+      return e;
+    }
+  }
+
+  Stream<List<UnlockRequestData>?> get unlockRequests =>
+      unlockRequestsCollection.snapshots().map((snapshot) {
+        return snapshot.docs.map((doc) {
+          return UnlockRequestData(
+            docID: doc.id,
+            uid: (doc.data() as Map)['uid'],
+            reason: (doc.data() as Map)['reason'],
+            unlock: (doc.data() as Map)['unlock'],
+          );
+        }).toList();
+      });
+
+  Stream<UnlockRequestData?> userUnlockRequest(String docID) {
+    return unlockRequestsCollection.doc(docID).snapshots().map((doc) {
+      if (doc.exists) {
+        return UnlockRequestData(
+          docID: docID,
+          uid: (doc.data() as Map)['uid'],
+          reason: (doc.data() as Map)['reason'],
+          unlock: (doc.data() as Map)['unlock'],
+        );
+      }
+    });
+  }
+
+  // Stream<UnlockRequestData?> get userUnlockRequest =>
+  //     unlockRequestsCollection.doc(uid).snapshots().map((doc) {
+  //       if (doc.exists) {
+  //         return UnlockRequestData(
+  //           uid: doc.id,
+  //           unlock: (doc.data() as Map)['unlock'],
+  //         );
+  //       }
+  //     });
+
+  Future addUnlockRequest(UnlockRequestData data) async {
+    try {
+      var doc = unlockRequestsCollection.doc();
+      await doc.set({'uid': data.uid, 'reason': data.reason, 'unlock': false});
+      return doc.id;
+    } catch (e) {
+      print(e.toString());
+      return e;
+    }
+  }
+
+  Future unlockUser(String docID) async {
+    try {
+      await unlockRequestsCollection.doc(docID).update({
+        'unlock': true,
       });
     } catch (e) {
       print(e.toString());

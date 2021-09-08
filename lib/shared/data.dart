@@ -6,4 +6,6 @@ class AppData {
       GlobalKey<NavigatorState>();
 
   static int? groupNumber;
+
+  static bool locked = false;
 }

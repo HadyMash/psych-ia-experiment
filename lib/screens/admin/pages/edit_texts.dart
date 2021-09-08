@@ -75,6 +75,7 @@ class _EditTextsState extends State<EditTexts> {
                 ),
                 const SizedBox(width: 15),
                 TextButton(
+                  // TODO make show button navigate to edit texts page
                   child: const Text('Show'),
                   onPressed: () => TextService()
                       .getTexts(
