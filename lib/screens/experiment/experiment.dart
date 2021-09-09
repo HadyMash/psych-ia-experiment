@@ -33,11 +33,9 @@ class _TimeIsUpState extends State<TimeIsUp> {
     super.initState();
     switch (widget.textNumber) {
       case 1:
-        print('first quiz');
         setExperimentProgress(ExperimentProgress.firstQuiz);
         break;
       case 2:
-        print('second quiz');
         setExperimentProgress(ExperimentProgress.secondQuiz);
         break;
     }
@@ -275,8 +273,7 @@ class FirstText extends StatefulWidget {
   FirstTextState createState() => FirstTextState();
 }
 
-class FirstTextState extends State<FirstText> with WidgetsBindingObserver {
-  bool active = true;
+class FirstTextState extends State<FirstText> {
   final GlobalKey<ExperimentAppBarState> _experimentAppBarKey =
       GlobalKey<ExperimentAppBarState>();
 
@@ -285,47 +282,6 @@ class FirstTextState extends State<FirstText> with WidgetsBindingObserver {
     super.initState();
 
     setExperimentProgress(ExperimentProgress.firstText);
-
-    if (kIsWeb) {
-      window.addEventListener('focus', onFocus);
-      window.addEventListener('blur', onBlur);
-    } else {
-      WidgetsBinding.instance!.addObserver(this);
-    }
-
-    if (AppData.locked) {
-      _showCheatingPopup(context, null, _experimentAppBarKey);
-    }
-  }
-
-  @override
-  void dispose() {
-    active = false;
-    if (kIsWeb) {
-      window.removeEventListener('focus', onFocus);
-      window.removeEventListener('blur', onBlur);
-    } else {
-      WidgetsBinding.instance!.removeObserver(this);
-    }
-    super.dispose();
-  }
-
-  void onFocus(Event e) {
-    if (active) {
-      didChangeAppLifecycleState(AppLifecycleState.resumed);
-    }
-  }
-
-  void onBlur(Event e) {
-    if (active) {
-      didChangeAppLifecycleState(AppLifecycleState.paused);
-    }
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    print(state);
-    _showCheatingPopup(context, state, _experimentAppBarKey);
   }
 
   @override
@@ -383,50 +339,7 @@ class FirstQuiz extends StatefulWidget {
   _FirstQuizState createState() => _FirstQuizState();
 }
 
-class _FirstQuizState extends State<FirstQuiz> with WidgetsBindingObserver {
-  bool active = true;
-
-  @override
-  void initState() {
-    super.initState();
-    if (kIsWeb) {
-      window.addEventListener('focus', onFocus);
-      window.addEventListener('blur', onBlur);
-    } else {
-      WidgetsBinding.instance!.addObserver(this);
-    }
-  }
-
-  @override
-  void dispose() {
-    active = false;
-    if (kIsWeb) {
-      window.removeEventListener('focus', onFocus);
-      window.removeEventListener('blur', onBlur);
-    } else {
-      WidgetsBinding.instance!.removeObserver(this);
-    }
-    super.dispose();
-  }
-
-  void onFocus(Event e) {
-    if (active) {
-      didChangeAppLifecycleState(AppLifecycleState.resumed);
-    }
-  }
-
-  void onBlur(Event e) {
-    if (active) {
-      didChangeAppLifecycleState(AppLifecycleState.paused);
-    }
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    // TODO implement cheating prevention
-    print(state);
-  }
-
+class _FirstQuizState extends State<FirstQuiz> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -457,51 +370,12 @@ class SecondText extends StatefulWidget {
   _SecondTextState createState() => _SecondTextState();
 }
 
-class _SecondTextState extends State<SecondText> with WidgetsBindingObserver {
-  bool active = true;
-
+class _SecondTextState extends State<SecondText> {
   @override
   void initState() {
     super.initState();
 
     setExperimentProgress(ExperimentProgress.secondText);
-
-    if (kIsWeb) {
-      window.addEventListener('focus', onFocus);
-      window.addEventListener('blur', onBlur);
-    } else {
-      WidgetsBinding.instance!.addObserver(this);
-    }
-  }
-
-  @override
-  void dispose() {
-    active = false;
-    if (kIsWeb) {
-      window.removeEventListener('focus', onFocus);
-      window.removeEventListener('blur', onBlur);
-    } else {
-      WidgetsBinding.instance!.removeObserver(this);
-    }
-    super.dispose();
-  }
-
-  void onFocus(Event e) {
-    if (active) {
-      didChangeAppLifecycleState(AppLifecycleState.resumed);
-    }
-  }
-
-  void onBlur(Event e) {
-    if (active) {
-      didChangeAppLifecycleState(AppLifecycleState.paused);
-    }
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    // TODO implement cheating prevention
-    print(state);
   }
 
   @override
@@ -549,50 +423,7 @@ class SecondQuiz extends StatefulWidget {
   _SecondQuizState createState() => _SecondQuizState();
 }
 
-class _SecondQuizState extends State<SecondQuiz> with WidgetsBindingObserver {
-  bool active = true;
-
-  @override
-  void initState() {
-    super.initState();
-    if (kIsWeb) {
-      window.addEventListener('focus', onFocus);
-      window.addEventListener('blur', onBlur);
-    } else {
-      WidgetsBinding.instance!.addObserver(this);
-    }
-  }
-
-  @override
-  void dispose() {
-    active = false;
-    if (kIsWeb) {
-      window.removeEventListener('focus', onFocus);
-      window.removeEventListener('blur', onBlur);
-    } else {
-      WidgetsBinding.instance!.removeObserver(this);
-    }
-    super.dispose();
-  }
-
-  void onFocus(Event e) {
-    if (active) {
-      didChangeAppLifecycleState(AppLifecycleState.resumed);
-    }
-  }
-
-  void onBlur(Event e) {
-    if (active) {
-      didChangeAppLifecycleState(AppLifecycleState.paused);
-    }
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    // TODO implement cheating prevention
-    print(state);
-  }
-
+class _SecondQuizState extends State<SecondQuiz> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -655,9 +486,65 @@ void _showToast(BuildContext context) {
   );
 }
 
-class Experiment extends StatelessWidget {
+class Experiment extends StatefulWidget {
   final Widget? page;
   const Experiment([this.page, Key? key]) : super(key: key);
+
+  @override
+  State<Experiment> createState() => _ExperimentState();
+}
+
+class _ExperimentState extends State<Experiment> with WidgetsBindingObserver {
+  bool active = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    setExperimentProgress(ExperimentProgress.firstText);
+
+    if (kIsWeb) {
+      window.addEventListener('focus', onFocus);
+      window.addEventListener('blur', onBlur);
+    } else {
+      WidgetsBinding.instance!.addObserver(this);
+    }
+
+    if (AppData.locked) {
+      _showCheatingPopup(context, null);
+    }
+  }
+
+  @override
+  void dispose() {
+    active = false;
+    if (kIsWeb) {
+      window.removeEventListener('focus', onFocus);
+      window.removeEventListener('blur', onBlur);
+    } else {
+      WidgetsBinding.instance!.removeObserver(this);
+    }
+    super.dispose();
+  }
+
+  void onFocus(Event e) {
+    if (active) {
+      didChangeAppLifecycleState(AppLifecycleState.resumed);
+    }
+  }
+
+  void onBlur(Event e) {
+    if (active) {
+      didChangeAppLifecycleState(AppLifecycleState.paused);
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    _showCheatingPopup(context, state);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -731,7 +618,7 @@ class Experiment extends StatelessWidget {
           transitionDuration: const Duration(milliseconds: 250),
           pageBuilder: (BuildContext context, Animation<double> animation,
               Animation<double> secondaryAnimation) {
-            return page ?? Agreement(uid: AuthService().getUser()!.uid);
+            return widget.page ?? Agreement(uid: AuthService().getUser()!.uid);
           },
           transitionsBuilder: (BuildContext context,
               Animation<double> animation,
