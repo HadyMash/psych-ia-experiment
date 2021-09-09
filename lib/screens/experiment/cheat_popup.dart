@@ -29,7 +29,6 @@ class _CheatingPopupState extends State<CheatingPopup> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
-          // TODO make size of column larger than text size.
           children: [
             const Text(
               'Locked',
