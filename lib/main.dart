@@ -16,8 +16,8 @@ import 'package:reading_experiment/shared/data.dart';
 import 'package:reading_experiment/shared/experiment_progress.dart';
 import 'package:reading_experiment/shared/text_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart' as url;
 
-// TODO add a check for internet connectivity
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -192,29 +192,79 @@ class _HomeState extends State<Home> {
     return Scaffold(
       extendBody: true,
       body: Center(
-        child: ElevatedButton(
-          child: const Text('Get Started'),
-          onPressed: () async {
-            var instance = await SharedPreferences.getInstance();
-            await instance.remove('experimentAppBarProgress');
+        child: Column(
+          children: [
+            ElevatedButton(
+              child: const Text('Get Started'),
+              onPressed: () async {
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (context) {
+                    return const AlertDialog(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                      content: SizedBox(
+                        height: 100,
+                        width: 100,
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                    );
+                  },
+                );
 
-            final AuthService _auth = AuthService();
-            dynamic currentUser = _auth.getUser();
-            if (currentUser != null) {
-              await _auth.deleteUserAndData(uid: AuthService().getUser()!.uid);
-            }
+                var instance = await SharedPreferences.getInstance();
+                await instance.remove('experimentAppBarProgress');
 
-            dynamic result = await _auth.logInAnonymously();
-            if (result is User) {
-              await DatabaseService(uid: _auth.getUser()!.uid)
-                  .makeSession(uid: _auth.getUser()!.uid);
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) =>
-                      Experiment(Agreement(uid: result.uid.toString()))));
-            } else {
-              _showToast(context, text: _auth.getError(result.toString()));
-            }
-          },
+                var completed = instance.getBool('completed');
+
+                // * check if they already completed the experiment to avoid duplicate results.
+                if (completed != true) {
+                  final AuthService _auth = AuthService();
+                  dynamic currentUser = _auth.getUser();
+                  if (currentUser != null) {
+                    await _auth.deleteUserAndData(
+                        uid: AuthService().getUser()!.uid);
+                  }
+
+                  dynamic result = await _auth.logInAnonymously();
+                  if (result is User) {
+                    await DatabaseService(uid: _auth.getUser()!.uid)
+                        .makeSession(uid: _auth.getUser()!.uid);
+                    Navigator.pop(context);
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                            Experiment(Agreement(uid: result.uid.toString()))));
+                  } else {
+                    Navigator.pop(context);
+                    _showToast(context,
+                        text: _auth.getError(result.toString()));
+                  }
+                } else {
+                  Navigator.pop(context);
+                  _showToast(context,
+                      text: 'You already completed this experiment. Thank you');
+                }
+              },
+            ),
+            const SizedBox(height: 2),
+            ElevatedButton(
+              child: const Text('Repository'),
+              onPressed: () async {
+                if (await url.canLaunch(
+                    'https://github.com/HadyMash/psych-ia-experiment')) {
+                  url.launch('https://github.com/HadyMash/psych-ia-experiment');
+                } else {
+                  _showToast(context, text: 'An error has occured.');
+                }
+              },
+            ),
+          ],
         ),
       ),
       bottomNavigationBar: SizedBox(
