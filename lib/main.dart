@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureProvider<TextData?>(
-      create: (_) => TextService().getTexts(context),
+      create: (_) => InfoService().getTexts(context),
       initialData: null,
       lazy: false,
       child: MaterialApp(
@@ -185,116 +185,188 @@ class _HomeState extends State<Home> {
     });
   }
 
+  final Stream<bool?> stream = InfoService().discoveryStream;
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      extendBody: true,
-      body: Center(
-        child: Column(
-          children: [
-            ElevatedButton(
-              child: const Text('Get Started'),
-              onPressed: () async {
-                showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (context) {
-                    return const AlertDialog(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
-                        ),
-                      ),
-                      content: SizedBox(
-                        height: 100,
-                        width: 100,
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      ),
-                    );
-                  },
-                );
+    return StreamBuilder<bool?>(
+      stream: stream,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-                var instance = await SharedPreferences.getInstance();
-                await instance.remove('experimentAppBarProgress');
+        if (snapshot.hasData && (snapshot.data as bool) == true) {
+          return Scaffold(
+            extendBody: true,
+            body: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    child: const Text('Get Started'),
+                    onPressed: () async {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) {
+                          return const AlertDialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                            ),
+                            content: SizedBox(
+                              height: 100,
+                              width: 100,
+                              child: Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                          );
+                        },
+                      );
 
-                var completed = instance.getBool('completed');
+                      var instance = await SharedPreferences.getInstance();
+                      await instance.remove('experimentAppBarProgress');
 
-                // * check if they already completed the experiment to avoid duplicate results.
-                if (completed != true) {
-                  final AuthService _auth = AuthService();
-                  dynamic currentUser = _auth.getUser();
-                  if (currentUser != null) {
-                    await _auth.deleteUserAndData(
-                        uid: AuthService().getUser()!.uid);
-                  }
+                      var completed = instance.getBool('completed');
 
-                  dynamic result = await _auth.logInAnonymously();
-                  if (result is User) {
-                    await DatabaseService(uid: _auth.getUser()!.uid)
-                        .makeSession(uid: _auth.getUser()!.uid);
-                    Navigator.pop(context);
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            Experiment(Agreement(uid: result.uid.toString()))));
-                  } else {
-                    Navigator.pop(context);
-                    _showToast(context,
-                        text: _auth.getError(result.toString()));
-                  }
-                } else {
-                  Navigator.pop(context);
-                  _showToast(context,
-                      text: 'You already completed this experiment. Thank you');
-                }
-              },
+                      // * check if they already completed the experiment to avoid duplicate results.
+                      if (completed != true) {
+                        final AuthService _auth = AuthService();
+                        dynamic currentUser = _auth.getUser();
+                        if (currentUser != null) {
+                          await _auth.deleteUserAndData(
+                              uid: AuthService().getUser()!.uid);
+                        }
+
+                        dynamic result = await _auth.logInAnonymously();
+                        if (result is User) {
+                          await DatabaseService(uid: _auth.getUser()!.uid)
+                              .makeSession(uid: _auth.getUser()!.uid);
+                          Navigator.pop(context);
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => Experiment(
+                                  Agreement(uid: result.uid.toString()))));
+                        } else {
+                          Navigator.pop(context);
+                          _showToast(context,
+                              text: _auth.getError(result.toString()));
+                        }
+                      } else {
+                        Navigator.pop(context);
+                        _showToast(context,
+                            text:
+                                'You already completed this experiment. Thank you');
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    child: const Text('Repository'),
+                    onPressed: () async {
+                      if (await url.canLaunch(
+                          'https://github.com/HadyMash/psych-ia-experiment')) {
+                        url.launch(
+                            'https://github.com/HadyMash/psych-ia-experiment');
+                      } else {
+                        _showToast(context, text: 'An error has occured.');
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 2),
-            ElevatedButton(
-              child: const Text('Repository'),
-              onPressed: () async {
-                if (await url.canLaunch(
-                    'https://github.com/HadyMash/psych-ia-experiment')) {
-                  url.launch('https://github.com/HadyMash/psych-ia-experiment');
-                } else {
-                  _showToast(context, text: 'An error has occured.');
-                }
-              },
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: SizedBox(
-        height: height * 0.1,
-        child: Center(
-          child: ClickableText(
-            text: 'Go to Admin Portal',
-            onTap: () => Navigator.of(context).push(
-              PageRouteBuilder(
-                transitionDuration: const Duration(milliseconds: 500),
-                pageBuilder: (BuildContext context, Animation<double> animation,
-                    Animation<double> secondaryAnimation) {
-                  return const AdminLogin();
-                },
-                transitionsBuilder: (BuildContext context,
-                    Animation<double> animation,
-                    Animation<double> secondaryAnimation,
-                    Widget child) {
-                  return Align(
-                    child: FadeTransition(
-                      opacity: animation,
-                      child: child,
+            bottomNavigationBar: SizedBox(
+              height: height * 0.1,
+              child: Center(
+                child: ClickableText(
+                  text: 'Go to Admin Portal',
+                  onTap: () => Navigator.of(context).push(
+                    PageRouteBuilder(
+                      transitionDuration: const Duration(milliseconds: 500),
+                      pageBuilder: (BuildContext context,
+                          Animation<double> animation,
+                          Animation<double> secondaryAnimation) {
+                        return const AdminLogin();
+                      },
+                      transitionsBuilder: (BuildContext context,
+                          Animation<double> animation,
+                          Animation<double> secondaryAnimation,
+                          Widget child) {
+                        return Align(
+                          child: FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+
+        return Scaffold(
+          extendBody: true,
+          body: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('Experiment not discoverable'),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  child: const Text('Repository'),
+                  onPressed: () async {
+                    if (await url.canLaunch(
+                        'https://github.com/HadyMash/psych-ia-experiment')) {
+                      url.launch(
+                          'https://github.com/HadyMash/psych-ia-experiment');
+                    } else {
+                      _showToast(context, text: 'An error has occured.');
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+          bottomNavigationBar: SizedBox(
+            height: height * 0.1,
+            child: Center(
+              child: ClickableText(
+                text: 'Go to Admin Portal',
+                onTap: () => Navigator.of(context).push(
+                  PageRouteBuilder(
+                    transitionDuration: const Duration(milliseconds: 500),
+                    pageBuilder: (BuildContext context,
+                        Animation<double> animation,
+                        Animation<double> secondaryAnimation) {
+                      return const AdminLogin();
+                    },
+                    transitionsBuilder: (BuildContext context,
+                        Animation<double> animation,
+                        Animation<double> secondaryAnimation,
+                        Widget child) {
+                      return Align(
+                        child: FadeTransition(
+                          opacity: animation,
+                          child: child,
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

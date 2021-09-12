@@ -28,7 +28,7 @@ class _EditTextsState extends State<EditTexts> {
   @override
   void initState() {
     super.initState();
-    var textService = TextService();
+    var textService = InfoService();
 
     textFuture = textService.getTexts(
       context,
@@ -77,7 +77,7 @@ class _EditTextsState extends State<EditTexts> {
                 TextButton(
                   // TODO make show button navigate to edit texts page
                   child: const Text('Show'),
-                  onPressed: () => TextService()
+                  onPressed: () => InfoService()
                       .getTexts(
                     context,
                     setFetching: _setFetching,
@@ -130,7 +130,7 @@ class _EditTextsState extends State<EditTexts> {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh_rounded),
-            onPressed: () => TextService()
+            onPressed: () => InfoService()
                 .getTexts(
               context,
               setFetching: _setFetching,
@@ -347,7 +347,7 @@ class _EditTextsState extends State<EditTexts> {
                                 );
                               },
                             );
-                            var result = await TextService().updateTexts(
+                            var result = await InfoService().updateTexts(
                                 textOneController.text, textTwoController.text);
                             Navigator.of(context).pop();
                             if (result == null) {

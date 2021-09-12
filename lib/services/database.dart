@@ -234,12 +234,13 @@ enum TextNumber {
   secondText,
 }
 
-class TextService {
+class InfoService {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  final CollectionReference textCollection =
-      FirebaseFirestore.instance.collection('texts');
+  final CollectionReference infoCollection =
+      FirebaseFirestore.instance.collection('info');
 
   final String texts = 'texts';
+  final String discovery = 'discovery';
 
   // get text
   Future<TextData?> getTexts(BuildContext context,
@@ -249,7 +250,7 @@ class TextService {
         setFetching();
       }
 
-      var result = await textCollection.doc(texts).get().then((doc) {
+      var result = await infoCollection.doc(texts).get().then((doc) {
         var data = doc.data() as Map;
 
         return TextData(
@@ -271,7 +272,7 @@ class TextService {
 
   Future updateTexts(String textOne, String textTwo) async {
     try {
-      await textCollection.doc(texts).set(
+      await infoCollection.doc(texts).set(
         {
           'firstText': textOne,
           'secondText': textTwo,
@@ -284,10 +285,18 @@ class TextService {
   }
 
   Stream<TextData?> get textUpdates =>
-      textCollection.doc(texts).snapshots().map((doc) => TextData(
+      infoCollection.doc(texts).snapshots().map((doc) => TextData(
             firstText: (doc.data() as Map)['firstText'],
             secondText: (doc.data() as Map)['secondText'],
           ));
+
+  Stream<bool?> get discoveryStream => infoCollection
+      .doc(discovery)
+      .snapshots()
+      .map((doc) => doc.get(discovery));
+
+  Future changeDiscovery(bool discovery) =>
+      infoCollection.doc(this.discovery).set({this.discovery: discovery});
 }
 
 _showErrorToast(BuildContext context, {required String text}) {
