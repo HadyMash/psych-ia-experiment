@@ -5,7 +5,9 @@ import 'package:reading_experiment/services/database.dart';
 import 'package:reading_experiment/shared/text_data.dart';
 
 class EditTexts extends StatefulWidget {
-  const EditTexts({Key? key}) : super(key: key);
+  final void Function() navigateToEditTexts;
+  const EditTexts({Key? key, required this.navigateToEditTexts})
+      : super(key: key);
 
   @override
   _EditTextsState createState() => _EditTextsState();
@@ -75,26 +77,28 @@ class _EditTextsState extends State<EditTexts> {
                 ),
                 const SizedBox(width: 15),
                 TextButton(
-                  // TODO make show button navigate to edit texts page
-                  child: const Text('Show'),
-                  onPressed: () => InfoService()
-                      .getTexts(
-                    context,
-                    setFetching: _setFetching,
-                    setNotFetching: _setNotFetching,
-                  )
-                      .then(
-                    (textData) {
-                      setState(() {
-                        if (textData != null) {
-                          textOneController.text = textData.firstText;
-                          textTwoController.text = textData.secondText;
-                          fToast.removeCustomToast();
-                        }
-                      });
-                    },
-                  ),
-                ),
+                    child: const Text('Show'),
+                    onPressed: () {
+                      InfoService()
+                          .getTexts(
+                        context,
+                        setFetching: _setFetching,
+                        setNotFetching: _setNotFetching,
+                      )
+                          .then(
+                        (textData) {
+                          setState(() {
+                            if (textData != null) {
+                              textOneController.text = textData.firstText;
+                              textTwoController.text = textData.secondText;
+                              fToast.removeCustomToast();
+                            }
+                          });
+                        },
+                      );
+
+                      widget.navigateToEditTexts();
+                    }),
                 const SizedBox(width: 5),
                 TextButton(
                   child: const Text('Ok'),

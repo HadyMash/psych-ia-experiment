@@ -41,7 +41,6 @@ class AuthService {
     }
   }
 
-  // TODO make a function to delete a user and their data
   /// delete a user and their data
   Future deleteUserAndData({required String uid}) async {
     try {

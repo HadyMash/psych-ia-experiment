@@ -7,7 +7,9 @@ import 'package:reading_experiment/services/database.dart';
 import 'package:reading_experiment/shared/unlock_request_data.dart';
 
 class UnlockRequests extends StatelessWidget {
-  const UnlockRequests({Key? key}) : super(key: key);
+  final void Function() navigateToUnlockRequest;
+  const UnlockRequests({Key? key, required this.navigateToUnlockRequest})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +45,7 @@ class UnlockRequests extends StatelessWidget {
             TextButton(
               child: const Text('Show'),
               onPressed: () {
-                // TODO navigate to unlock requests page
+                navigateToUnlockRequest();
                 fToast.removeCustomToast();
               },
             ),
