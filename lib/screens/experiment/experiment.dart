@@ -167,7 +167,7 @@ class ExperimentAppBarState extends State<ExperimentAppBar>
     super.initState();
     controller = AnimationController(
       vsync: this,
-      duration: widget.duration ?? const Duration(minutes: 3),
+      duration: widget.duration ?? const Duration(minutes: 5),
     );
 
     _updateController();
@@ -293,6 +293,7 @@ class FirstTextState extends State<FirstText> {
         key: _experimentAppBarKey,
         title: 'First Text',
         uid: widget.uid,
+        duration: const Duration(seconds: 300), // 5 minutes
         onTimeFinish: () {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
@@ -306,26 +307,46 @@ class FirstTextState extends State<FirstText> {
       ),
       body: Stack(
         children: [
-          Center(
-            child: SingleChildScrollView(
-              child: Center(
-                child: MarkdownBody(
-                  data: texts?.firstText ??
-                      'Error Getting Text. Please exit the experiment and try again.',
-                  selectable: false,
-                  styleSheet: MarkdownStyleSheet(
-                    strong: TextStyle(
-                      fontWeight: (AppData.groupNumber ?? 1) == 1
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                    ),
+          ExperimentText(texts: texts),
+          const ExitExperiment(),
+        ],
+      ),
+    );
+  }
+}
+
+class ExperimentText extends StatelessWidget {
+  const ExperimentText({
+    Key? key,
+    required this.texts,
+  }) : super(key: key);
+
+  final TextData? texts;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 25),
+        child: SingleChildScrollView(
+          child: Center(
+            child: SizedBox(
+              width: 600,
+              child: MarkdownBody(
+                data: texts?.firstText ??
+                    'Error Getting Text. Please exit the experiment and try again.',
+                selectable: false,
+                styleSheet: MarkdownStyleSheet(
+                  strong: TextStyle(
+                    fontWeight: (AppData.groupNumber ?? 1) == 1
+                        ? FontWeight.bold
+                        : FontWeight.normal,
                   ),
                 ),
               ),
             ),
           ),
-          const ExitExperiment(),
-        ],
+        ),
       ),
     );
   }
@@ -343,10 +364,8 @@ class _FirstQuizState extends State<FirstQuiz> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ExperimentAppBar(
-        title: 'First Quiz',
-        uid: widget.uid,
-        onTimeFinish: () {},
+      appBar: AppBar(
+        title: const Text('First Quiz'),
       ),
       body: Stack(
         children: const [
@@ -371,6 +390,9 @@ class SecondText extends StatefulWidget {
 }
 
 class _SecondTextState extends State<SecondText> {
+  final GlobalKey<ExperimentAppBarState> _experimentAppBarKey =
+      GlobalKey<ExperimentAppBarState>();
+
   @override
   void initState() {
     super.initState();
@@ -384,30 +406,24 @@ class _SecondTextState extends State<SecondText> {
 
     return Scaffold(
       appBar: ExperimentAppBar(
+        key: _experimentAppBarKey,
         title: 'Second Text',
         uid: widget.uid,
-        onTimeFinish: () {},
+        duration: const Duration(seconds: 300), // 5 minutes
+        onTimeFinish: () {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => TimeIsUp(
+                uid: widget.uid,
+                textNumber: 2,
+              ),
+            ),
+          );
+        },
       ),
       body: Stack(
         children: [
-          Center(
-            child: SingleChildScrollView(
-              child: Center(
-                child: MarkdownBody(
-                  data: texts?.secondText ??
-                      'Error Getting Text. Please exit the experiment and try again.',
-                  selectable: false,
-                  styleSheet: MarkdownStyleSheet(
-                    strong: TextStyle(
-                      fontWeight: (AppData.groupNumber ?? 1) == 1
-                          ? FontWeight.normal
-                          : FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
+          ExperimentText(texts: texts),
           const ExitExperiment(),
         ],
       ),
@@ -543,7 +559,7 @@ class _ExperimentState extends State<Experiment> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
 
-    _showCheatingPopup(context, state);
+    // _showCheatingPopup(context, state);
   }
 
   @override

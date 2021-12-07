@@ -241,6 +241,11 @@ class _EditTextsState extends State<EditTexts> {
                                             Markdown(
                                               data: textOneController.text,
                                               selectable: true,
+                                              styleSheet: MarkdownStyleSheet(
+                                                p: const TextStyle(
+                                                  height: 1.5,
+                                                ),
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -316,6 +321,11 @@ class _EditTextsState extends State<EditTexts> {
                                             Markdown(
                                               data: textTwoController.text,
                                               selectable: true,
+                                              styleSheet: MarkdownStyleSheet(
+                                                p: const TextStyle(
+                                                  height: 1.5,
+                                                ),
+                                              ),
                                             ),
                                           ],
                                         ),
