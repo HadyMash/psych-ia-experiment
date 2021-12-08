@@ -9,6 +9,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:reading_experiment/screens/experiment/exit_experiment.dart';
+import 'package:reading_experiment/screens/experiment/experiment_over.dart';
 import 'package:reading_experiment/screens/experiment/intro.dart';
 import 'package:reading_experiment/services/auth.dart';
 import 'package:reading_experiment/services/database.dart';
@@ -70,7 +71,7 @@ class _TimeIsUpState extends State<TimeIsUp> {
                     icon: const Icon(Icons.copy),
                     onPressed: () {
                       Clipboard.setData(ClipboardData(text: widget.uid));
-                      _showToast(context);
+                      showClipboardToast(context);
                     },
                   ),
                 ],
@@ -240,7 +241,7 @@ class ExperimentAppBarState extends State<ExperimentAppBar>
                       icon: const Icon(Icons.copy),
                       onPressed: () {
                         Clipboard.setData(ClipboardData(text: widget.uid));
-                        _showToast(context);
+                        showClipboardToast(context);
                       },
                     ),
                   ],
@@ -310,7 +311,7 @@ class FirstTextState extends State<FirstText> {
       ),
       body: Stack(
         children: [
-          ExperimentText(texts: texts),
+          ExperimentText(texts: texts, textNumber: 1),
           const ExitExperiment(),
         ],
       ),
@@ -321,9 +322,11 @@ class FirstTextState extends State<FirstText> {
 class ExperimentText extends StatelessWidget {
   const ExperimentText({
     Key? key,
+    required this.textNumber,
     required this.texts,
   }) : super(key: key);
 
+  final int textNumber;
   final TextData? texts;
 
   @override
@@ -336,14 +339,25 @@ class ExperimentText extends StatelessWidget {
             child: SizedBox(
               width: 600,
               child: MarkdownBody(
-                data: texts?.firstText ??
-                    'Error Getting Text. Please exit the experiment and try again.',
+                data: textNumber == 1
+                    ? (texts?.firstText ??
+                        'Error Getting Text. Please exit the experiment and try again.')
+                    : (texts?.secondText ??
+                        'Error Getting Text. Please exit the experiment and try again.'),
                 selectable: false,
                 styleSheet: MarkdownStyleSheet(
+                  p: const TextStyle(
+                    height: 1.5,
+                  ),
                   strong: TextStyle(
+                    height: 1.5,
                     fontWeight: (AppData.groupNumber ?? 1) == 1
-                        ? FontWeight.bold
-                        : FontWeight.normal,
+                        ? (textNumber == 1
+                            ? FontWeight.bold
+                            : FontWeight.normal)
+                        : (textNumber == 1
+                            ? FontWeight.normal
+                            : FontWeight.bold),
                   ),
                 ),
               ),
@@ -365,6 +379,8 @@ class FirstQuiz extends StatefulWidget {
 
 class _FirstQuizState extends State<FirstQuiz> {
   final _formKey = GlobalKey<FormBuilderState>();
+  final int _quizNumber = 1;
+  late List questions;
 
   Future<Map> _getAnswersFromCache() async {
     if (AppData.quizOneAnswers.isEmpty) {
@@ -374,6 +390,82 @@ class _FirstQuizState extends State<FirstQuiz> {
       AppData.quizOneAnswers = json.decode(encodedMap ?? '');
     }
     return AppData.quizOneAnswers;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    questions = [
+      MultipleChoiceQuestion(
+        name: 'What does the General Relativity theory argue?',
+        choices: const [
+          'Space and time are connected acknowledging the existence of gravity, published in 1915',
+          'Space and time are connected without acknowledging the existence of gravity, published in 1915',
+          'Space and gravity are connected without the acknowledgement of time, published in 1905',
+          'Space and time are connected without acknowledging the existence of gravity, published in 1905',
+        ],
+        quizNumber: _quizNumber,
+        initialValue: AppData
+            .quizOneAnswers['What does the General Relativity theory argue?'],
+      ),
+      const SizedBox(height: 20),
+      MultipleChoiceQuestion(
+        name:
+            'What did Einstein discover through his experiments and equations?',
+        choices: const [
+          'Miniscule objects caused a distortion in space-time',
+          'Medium objected caused a distortion in space-time',
+          'Massive objects caused a distortion in space-time',
+          'All of the above',
+        ],
+        quizNumber: _quizNumber,
+        initialValue: AppData.quizOneAnswers[
+            'What did Einstein discover through his experiments and equations?'],
+      ),
+      const SizedBox(height: 20),
+      MultipleChoiceQuestion(
+        name:
+            'Who uses the method of gravitational lensing to study stars and galaxies behind massive objects, such as the black hole?',
+        choices: const [
+          'Astronomers',
+          'Physicists',
+          'Astrologists',
+          'Biologists',
+        ],
+        quizNumber: _quizNumber,
+        initialValue: AppData.quizOneAnswers[
+            'Who uses the method of gravitational lensing to study stars and galaxies behind massive objects, such as the black hole?'],
+      ),
+      const SizedBox(height: 20),
+      MultipleChoiceQuestion(
+        name:
+            'When did NASA launch the Gravity Prove-B (GP-B), a satellite that helped prove Einstein’s theory?',
+        choices: const [
+          '1998',
+          '2000',
+          '2004',
+          '2014',
+        ],
+        quizNumber: _quizNumber,
+        initialValue: AppData.quizOneAnswers[
+            'When did NASA launch the Gravity Prove-B (GP-B), a satellite that helped prove Einstein’s theory?'],
+      ),
+      const SizedBox(height: 20),
+      MultipleChoiceQuestion(
+        name: 'What were Robert Pound and Glen Rebka’s findings of Gamma-rays?',
+        choices: const [
+          'Heavily changed frequency due to distortions caused by distance',
+          'Slightly changed frequency due to distortions caused by distance',
+          'Heavily changed frequency due to distortions caused by gravity',
+          'Slightly changed frequency due to distortions caused by gravity',
+        ],
+        quizNumber: _quizNumber,
+        initialValue: AppData.quizOneAnswers[
+            'What were Robert Pound and Glen Rebka’s findings of Gamma-rays?'],
+      ),
+    ];
+
+    questions.shuffle();
   }
 
   @override
@@ -428,70 +520,7 @@ class _FirstQuizState extends State<FirstQuiz> {
                               mainAxisSize: MainAxisSize.max,
                               children: [
                                 const SizedBox(height: 25),
-                                MultipleChoiceQuestion(
-                                  name:
-                                      'What does the General Relativity theory argue?',
-                                  choices: const [
-                                    'Space and time are connected acknowledging the existence of gravity, published in 1915',
-                                    'Space and time are connected without acknowledging the existence of gravity, published in 1915',
-                                    'Space and gravity are connected without the acknowledgement of time, published in 1905',
-                                    'Space and time are connected without acknowledging the existence of gravity, published in 1905',
-                                  ],
-                                  initialValue: AppData.quizOneAnswers[
-                                      'What does the General Relativity theory argue?'],
-                                ),
-                                const SizedBox(height: 20),
-                                MultipleChoiceQuestion(
-                                  name:
-                                      'What did Einstein discover through his experiments and equations?',
-                                  choices: const [
-                                    'Miniscule objects caused a distortion in space-time',
-                                    'Medium objected caused a distortion in space-time',
-                                    'Massive objects caused a distortion in space-time',
-                                    'All of the above',
-                                  ],
-                                  initialValue: AppData.quizOneAnswers[
-                                      'What did Einstein discover through his experiments and equations?'],
-                                ),
-                                const SizedBox(height: 20),
-                                MultipleChoiceQuestion(
-                                  name:
-                                      'Who uses the method of gravitational lensing to study stars and galaxies behind massive objects, such as the black hole?',
-                                  choices: const [
-                                    'Astronomers',
-                                    'Physicists',
-                                    'Astrologists',
-                                    'Biologists',
-                                  ],
-                                  initialValue: AppData.quizOneAnswers[
-                                      'Who uses the method of gravitational lensing to study stars and galaxies behind massive objects, such as the black hole?'],
-                                ),
-                                const SizedBox(height: 20),
-                                MultipleChoiceQuestion(
-                                  name:
-                                      'When did NASA launch the Gravity Prove-B (GP-B), a satellite that helped prove Einstein’s theory?',
-                                  choices: const [
-                                    '1998',
-                                    '2000',
-                                    '2004',
-                                    '2014',
-                                  ],
-                                  initialValue: AppData.quizOneAnswers[
-                                      'When did NASA launch the Gravity Prove-B (GP-B), a satellite that helped prove Einstein’s theory?'],
-                                ),
-                                const SizedBox(height: 20),
-                                MultipleChoiceQuestion(
-                                  name:
-                                      'What were Robert Pound and Glen Rebka’s findings of Gamma-rays?',
-                                  choices: const [
-                                    'Heavily changed frequency due to distortions caused by distance',
-                                    'Slightly changed frequency due to distortions caused by distance',
-                                    'Heavily changed frequency due to distortions caused by gravity',
-                                    'Slightly changed frequency due to distortions caused by gravity',
-                                  ],
-                                  initialValue: AppData.quizOneAnswers[
-                                      'What were Robert Pound and Glen Rebka’s findings of Gamma-rays?'],
-                                ),
+                                ...questions,
                                 const SizedBox(height: 25),
                               ],
                             ),
@@ -574,7 +603,7 @@ class _SecondTextState extends State<SecondText> {
       ),
       body: Stack(
         children: [
-          ExperimentText(texts: texts),
+          ExperimentText(texts: texts, textNumber: 2),
           const ExitExperiment(),
         ],
       ),
@@ -592,6 +621,8 @@ class SecondQuiz extends StatefulWidget {
 
 class _SecondQuizState extends State<SecondQuiz> {
   final _formKey = GlobalKey<FormBuilderState>();
+  final int _quizNumber = 2;
+  late List questions;
 
   Future<Map> _getAnswersFromCache() async {
     if (AppData.quizTwoAnswers.isEmpty) {
@@ -604,10 +635,83 @@ class _SecondQuizState extends State<SecondQuiz> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    questions = [
+      MultipleChoiceQuestion(
+        name:
+            'In a social context, what interactions affect the Social Cognitive Theory?',
+        choices: const [
+          'The individual, the social environment, and the individuals’ past behaviours',
+          'The individual, the social environment, and the individuals’ present behaviours',
+          'The individual, the social environment, and the individuals past and present behaviour',
+          'The individuals’ social group, and their past and present behaviours',
+        ],
+        quizNumber: _quizNumber,
+        initialValue: AppData.quizTwoAnswers[
+            'In a social context, what interactions affect the Social Cognitive Theory?'],
+      ),
+      const SizedBox(height: 20),
+      MultipleChoiceQuestion(
+        name: 'Who started the research of the Social Cognitive Theory?',
+        choices: const [
+          'Albert Bandura',
+          'B.F Skinner',
+          'Albert Einstein',
+          'Jean Piaget',
+        ],
+        quizNumber: _quizNumber,
+        initialValue: AppData.quizTwoAnswers[
+            'Who started the research of the Social Cognitive Theory?'],
+      ),
+      const SizedBox(height: 20),
+      MultipleChoiceQuestion(
+        name: 'In terms of human behaviour, what does modelling mean?',
+        choices: const [
+          'The way that humans act and interact',
+          'To pose for specific companies and earn money',
+          'When observing others, the individual gets an idea of how behaviours are performed, and later on uses these behaviours against them',
+          'When observing others, the individual gets an idea of how behaviours are performed, and later on imitate these behaviours',
+        ],
+        quizNumber: _quizNumber,
+        initialValue: AppData.quizTwoAnswers[
+            'In terms of human behaviour, what does modelling mean?'],
+      ),
+      const SizedBox(height: 20),
+      MultipleChoiceQuestion(
+        name: 'Outline one core idea of the Social Cognitive Theory.',
+        choices: const [
+          'Behaviour and social norms are learned through observation of others',
+          'Behaviour and social norms are learned through self-growth',
+          'These behaviours are never changed in a social context',
+          'These behaviours are observed in order to, later on, be used against them',
+        ],
+        quizNumber: _quizNumber,
+        initialValue: AppData.quizTwoAnswers[
+            'Outline one core idea of the Social Cognitive Theory.'],
+      ),
+      const SizedBox(height: 20),
+      MultipleChoiceQuestion(
+        name: 'What is an individuals’ behaviour controlled by?',
+        choices: const [
+          'Environmental influences only',
+          'Internal dispositions only',
+          'Both, Environmental influences, and/or internal dispositions',
+          'An individuals personal experiences',
+        ],
+        quizNumber: _quizNumber,
+        initialValue: AppData
+            .quizTwoAnswers['What is an individuals’ behaviour controlled by?'],
+      ),
+    ];
+    questions.shuffle();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('First Quiz'),
+        title: const Text('Second Quiz'),
         actions: [
           TextButton(
             child: const Text(
@@ -655,70 +759,7 @@ class _SecondQuizState extends State<SecondQuiz> {
                               mainAxisSize: MainAxisSize.max,
                               children: [
                                 const SizedBox(height: 25),
-                                MultipleChoiceQuestion(
-                                  name:
-                                      'What does the General Relativity theory argue?',
-                                  choices: const [
-                                    'Space and time are connected acknowledging the existence of gravity, published in 1915',
-                                    'Space and time are connected without acknowledging the existence of gravity, published in 1915',
-                                    'Space and gravity are connected without the acknowledgement of time, published in 1905',
-                                    'Space and time are connected without acknowledging the existence of gravity, published in 1905',
-                                  ],
-                                  initialValue: AppData.quizOneAnswers[
-                                      'What does the General Relativity theory argue?'],
-                                ),
-                                const SizedBox(height: 20),
-                                MultipleChoiceQuestion(
-                                  name:
-                                      'What did Einstein discover through his experiments and equations?',
-                                  choices: const [
-                                    'Miniscule objects caused a distortion in space-time',
-                                    'Medium objected caused a distortion in space-time',
-                                    'Massive objects caused a distortion in space-time',
-                                    'All of the above',
-                                  ],
-                                  initialValue: AppData.quizOneAnswers[
-                                      'What did Einstein discover through his experiments and equations?'],
-                                ),
-                                const SizedBox(height: 20),
-                                MultipleChoiceQuestion(
-                                  name:
-                                      'Who uses the method of gravitational lensing to study stars and galaxies behind massive objects, such as the black hole?',
-                                  choices: const [
-                                    'Astronomers',
-                                    'Physicists',
-                                    'Astrologists',
-                                    'Biologists',
-                                  ],
-                                  initialValue: AppData.quizOneAnswers[
-                                      'Who uses the method of gravitational lensing to study stars and galaxies behind massive objects, such as the black hole?'],
-                                ),
-                                const SizedBox(height: 20),
-                                MultipleChoiceQuestion(
-                                  name:
-                                      'When did NASA launch the Gravity Prove-B (GP-B), a satellite that helped prove Einstein’s theory?',
-                                  choices: const [
-                                    '1998',
-                                    '2000',
-                                    '2004',
-                                    '2014',
-                                  ],
-                                  initialValue: AppData.quizOneAnswers[
-                                      'When did NASA launch the Gravity Prove-B (GP-B), a satellite that helped prove Einstein’s theory?'],
-                                ),
-                                const SizedBox(height: 20),
-                                MultipleChoiceQuestion(
-                                  name:
-                                      'What were Robert Pound and Glen Rebka’s findings of Gamma-rays?',
-                                  choices: const [
-                                    'Heavily changed frequency due to distortions caused by distance',
-                                    'Slightly changed frequency due to distortions caused by distance',
-                                    'Heavily changed frequency due to distortions caused by gravity',
-                                    'Slightly changed frequency due to distortions caused by gravity',
-                                  ],
-                                  initialValue: AppData.quizOneAnswers[
-                                      'What were Robert Pound and Glen Rebka’s findings of Gamma-rays?'],
-                                ),
+                                ...questions,
                                 const SizedBox(height: 25),
                               ],
                             ),
@@ -729,18 +770,20 @@ class _SecondQuizState extends State<SecondQuiz> {
                                 if (_formKey.currentState!.saveAndValidate()) {
                                   var value = _formKey.currentState!.value;
 
-                                  AppData.quizOneAnswers = value;
+                                  AppData.quizTwoAnswers = value;
 
                                   var prefs =
                                       await SharedPreferences.getInstance();
                                   String encodedMap = json.encode(value);
                                   await prefs.setString(
-                                      'quizOneAnswers', encodedMap);
+                                      'quizTwoAnswers', encodedMap);
+
+                                  AppData.finished = true;
 
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          SecondText(uid: widget.uid),
+                                          ExperimentOver(uid: widget.uid),
                                     ),
                                   );
                                 }
@@ -759,7 +802,7 @@ class _SecondQuizState extends State<SecondQuiz> {
   }
 }
 
-void _showToast(BuildContext context) {
+void showClipboardToast(BuildContext context) {
   late FToast fToast;
   fToast = FToast();
   fToast.init(context);
@@ -856,7 +899,7 @@ class _ExperimentState extends State<Experiment> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
 
-    // _showCheatingPopup(context, state);
+    _showCheatingPopup(context, state);
   }
 
   @override
@@ -952,8 +995,9 @@ class _ExperimentState extends State<Experiment> with WidgetsBindingObserver {
 
 void _showCheatingPopup(BuildContext context, AppLifecycleState? state,
     [GlobalKey<ExperimentAppBarState>? key, bool? ignoreAppDataLockedValue]) {
-  if ((AppData.locked == false && state == AppLifecycleState.paused) ||
-      (ignoreAppDataLockedValue ?? false)) {
+  if (((AppData.locked == false && state == AppLifecycleState.paused) ||
+          (ignoreAppDataLockedValue ?? false)) &&
+      AppData.finished == false) {
     AppData.locked = true;
 
     if (key != null) {

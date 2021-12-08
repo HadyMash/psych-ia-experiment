@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:reading_experiment/screens/admin/admin_login.dart';
 import 'package:reading_experiment/screens/admin/admin_panel.dart';
 import 'package:reading_experiment/screens/experiment/experiment.dart';
-import 'package:reading_experiment/screens/experiment/finish.dart';
+import 'package:reading_experiment/screens/experiment/experiment_over.dart';
 import 'package:reading_experiment/screens/experiment/intro.dart';
 import 'package:reading_experiment/services/auth.dart';
 import 'package:reading_experiment/services/database.dart';
@@ -175,7 +175,8 @@ class _HomeState extends State<Home> {
                 break;
               case ExperimentProgress.finish:
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const Experiment(Finish()),
+                  builder: (context) =>
+                      Experiment(ExperimentOver(uid: user.uid)),
                 ));
                 break;
               case ExperimentProgress.error:

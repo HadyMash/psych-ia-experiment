@@ -8,9 +8,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 class MultipleChoiceQuestion extends StatefulWidget {
   final String name;
   final List<String> choices;
+  final int quizNumber;
   final String? initialValue;
   const MultipleChoiceQuestion(
-      {Key? key, required this.name, required this.choices, this.initialValue})
+      {Key? key,
+      required this.name,
+      required this.choices,
+      required this.quizNumber,
+      this.initialValue})
       : super(key: key);
 
   @override
@@ -53,11 +58,25 @@ class _MultipleChoiceQuestionState extends State<MultipleChoiceQuestion> {
             separator: const SizedBox(height: 50),
             onChanged: (String? val) async {
               if (val != null) {
-                AppData.quizOneAnswers[widget.name] = val;
+                switch (widget.quizNumber) {
+                  case 1:
+                    AppData.quizOneAnswers[widget.name] = val;
 
-                var prefs = await SharedPreferences.getInstance();
-                String encodedMap = json.encode(AppData.quizOneAnswers);
-                await prefs.setString('quizOneAnswers', encodedMap);
+                    var prefs = await SharedPreferences.getInstance();
+                    String encodedMap = json.encode(AppData.quizOneAnswers);
+                    await prefs.setString('quizOneAnswers', encodedMap);
+
+                    break;
+                  case 2:
+                    AppData.quizTwoAnswers[widget.name] = val;
+
+                    var prefs = await SharedPreferences.getInstance();
+                    String encodedMap = json.encode(AppData.quizTwoAnswers);
+                    await prefs.setString('quizTwoAnswers', encodedMap);
+
+                    break;
+                  default:
+                }
               }
             },
           ),

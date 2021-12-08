@@ -228,6 +228,14 @@ class DatabaseService {
       return e;
     }
   }
+
+  Future uploadAnswers(
+      {required Map firstQuiz, required Map secondQuiz}) async {
+    await answerCollection.doc(uid).set({
+      'firstQuiz': firstQuiz,
+      'secondQuiz': secondQuiz,
+    });
+  }
 }
 
 enum TextNumber {

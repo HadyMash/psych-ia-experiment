@@ -215,7 +215,7 @@ class _KickUserState extends State<KickUser> {
       child: Padding(
         padding: const EdgeInsets.all(5),
         child: Icon(
-          CupertinoIcons.xmark,
+          Icons.clear_rounded,
           color: Colors.red[700],
         ),
       ),
