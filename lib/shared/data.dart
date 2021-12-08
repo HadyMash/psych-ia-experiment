@@ -8,4 +8,8 @@ class AppData {
   static int? groupNumber;
 
   static bool locked = false;
+  static bool finished = false;
+
+  static Map quizOneAnswers = {};
+  static Map quizTwoAnswers = {};
 }

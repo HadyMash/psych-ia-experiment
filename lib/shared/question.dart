@@ -1,9 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:reading_experiment/shared/answers.dart';
+import 'package:reading_experiment/shared/data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MultipleChoiceQuestion extends StatefulWidget {
@@ -54,10 +53,10 @@ class _MultipleChoiceQuestionState extends State<MultipleChoiceQuestion> {
             separator: const SizedBox(height: 50),
             onChanged: (String? val) async {
               if (val != null) {
-                Answers.quizOneAnswers[widget.name] = val;
+                AppData.quizOneAnswers[widget.name] = val;
 
                 var prefs = await SharedPreferences.getInstance();
-                String encodedMap = json.encode(Answers.quizOneAnswers);
+                String encodedMap = json.encode(AppData.quizOneAnswers);
                 await prefs.setString('quizOneAnswers', encodedMap);
               }
             },

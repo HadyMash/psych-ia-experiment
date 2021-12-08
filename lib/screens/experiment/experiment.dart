@@ -12,7 +12,6 @@ import 'package:reading_experiment/screens/experiment/exit_experiment.dart';
 import 'package:reading_experiment/screens/experiment/intro.dart';
 import 'package:reading_experiment/services/auth.dart';
 import 'package:reading_experiment/services/database.dart';
-import 'package:reading_experiment/shared/answers.dart';
 import 'package:reading_experiment/shared/data.dart';
 import 'package:reading_experiment/shared/experiment_progress.dart';
 import 'package:reading_experiment/shared/question.dart';
@@ -368,13 +367,13 @@ class _FirstQuizState extends State<FirstQuiz> {
   final _formKey = GlobalKey<FormBuilderState>();
 
   Future<Map> _getAnswersFromCache() async {
-    if (Answers.quizOneAnswers.isEmpty) {
+    if (AppData.quizOneAnswers.isEmpty) {
       var prefs = await SharedPreferences.getInstance();
 
       String? encodedMap = prefs.getString('quizOneAnswers');
-      Answers.quizOneAnswers = json.decode(encodedMap ?? '');
+      AppData.quizOneAnswers = json.decode(encodedMap ?? '');
     }
-    return Answers.quizOneAnswers;
+    return AppData.quizOneAnswers;
   }
 
   @override
@@ -389,7 +388,7 @@ class _FirstQuizState extends State<FirstQuiz> {
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () async {
-              Answers.quizOneAnswers.clear();
+              AppData.quizOneAnswers.clear();
               await SharedPreferences.getInstance().then((prefs) {
                 prefs.remove('quizOneAnswers');
               });
@@ -438,7 +437,7 @@ class _FirstQuizState extends State<FirstQuiz> {
                                     'Space and gravity are connected without the acknowledgement of time, published in 1905',
                                     'Space and time are connected without acknowledging the existence of gravity, published in 1905',
                                   ],
-                                  initialValue: Answers.quizOneAnswers[
+                                  initialValue: AppData.quizOneAnswers[
                                       'What does the General Relativity theory argue?'],
                                 ),
                                 const SizedBox(height: 20),
@@ -451,7 +450,7 @@ class _FirstQuizState extends State<FirstQuiz> {
                                     'Massive objects caused a distortion in space-time',
                                     'All of the above',
                                   ],
-                                  initialValue: Answers.quizOneAnswers[
+                                  initialValue: AppData.quizOneAnswers[
                                       'What did Einstein discover through his experiments and equations?'],
                                 ),
                                 const SizedBox(height: 20),
@@ -464,7 +463,7 @@ class _FirstQuizState extends State<FirstQuiz> {
                                     'Astrologists',
                                     'Biologists',
                                   ],
-                                  initialValue: Answers.quizOneAnswers[
+                                  initialValue: AppData.quizOneAnswers[
                                       'Who uses the method of gravitational lensing to study stars and galaxies behind massive objects, such as the black hole?'],
                                 ),
                                 const SizedBox(height: 20),
@@ -477,7 +476,7 @@ class _FirstQuizState extends State<FirstQuiz> {
                                     '2004',
                                     '2014',
                                   ],
-                                  initialValue: Answers.quizOneAnswers[
+                                  initialValue: AppData.quizOneAnswers[
                                       'When did NASA launch the Gravity Prove-B (GP-B), a satellite that helped prove Einstein’s theory?'],
                                 ),
                                 const SizedBox(height: 20),
@@ -490,7 +489,7 @@ class _FirstQuizState extends State<FirstQuiz> {
                                     'Heavily changed frequency due to distortions caused by gravity',
                                     'Slightly changed frequency due to distortions caused by gravity',
                                   ],
-                                  initialValue: Answers.quizOneAnswers[
+                                  initialValue: AppData.quizOneAnswers[
                                       'What were Robert Pound and Glen Rebka’s findings of Gamma-rays?'],
                                 ),
                                 const SizedBox(height: 25),
@@ -503,7 +502,7 @@ class _FirstQuizState extends State<FirstQuiz> {
                                 if (_formKey.currentState!.saveAndValidate()) {
                                   var value = _formKey.currentState!.value;
 
-                                  Answers.quizOneAnswers = value;
+                                  AppData.quizOneAnswers = value;
 
                                   var prefs =
                                       await SharedPreferences.getInstance();
@@ -592,24 +591,170 @@ class SecondQuiz extends StatefulWidget {
 }
 
 class _SecondQuizState extends State<SecondQuiz> {
+  final _formKey = GlobalKey<FormBuilderState>();
+
+  Future<Map> _getAnswersFromCache() async {
+    if (AppData.quizTwoAnswers.isEmpty) {
+      var prefs = await SharedPreferences.getInstance();
+
+      String? encodedMap = prefs.getString('quizTwoAnswers');
+      AppData.quizTwoAnswers = json.decode(encodedMap ?? '');
+    }
+    return AppData.quizTwoAnswers;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ExperimentAppBar(
-        title: 'Second Quiz',
-        uid: widget.uid,
-        onTimeFinish: () {},
-      ),
-      body: Stack(
-        children: const [
-          Center(
-            child: SingleChildScrollView(
-              child: Center(),
+      appBar: AppBar(
+        title: const Text('First Quiz'),
+        actions: [
+          TextButton(
+            child: const Text(
+              'Clear Answers',
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: () async {
+              AppData.quizTwoAnswers.clear();
+              await SharedPreferences.getInstance().then((prefs) {
+                prefs.remove('quizTwoAnswers');
+              });
+              setState(() {});
+            },
+            style: ButtonStyle(
+              overlayColor: MaterialStateColor.resolveWith(
+                (states) => Colors.white.withOpacity(0.2),
+              ),
             ),
           ),
-          ExitExperiment(),
+          const SizedBox(width: 20),
         ],
       ),
+      body: FutureBuilder(
+          future: _getAnswersFromCache(),
+          builder: (context, future) {
+            if (future.connectionState == ConnectionState.none) {
+              return const Center(child: Text('error, please refresh'));
+            } else if (future.connectionState != ConnectionState.done) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            return Stack(
+              children: [
+                SingleChildScrollView(
+                  child: Center(
+                    child: SizedBox(
+                      width: 600,
+                      child: Column(
+                        children: [
+                          FormBuilder(
+                            key: _formKey,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                const SizedBox(height: 25),
+                                MultipleChoiceQuestion(
+                                  name:
+                                      'What does the General Relativity theory argue?',
+                                  choices: const [
+                                    'Space and time are connected acknowledging the existence of gravity, published in 1915',
+                                    'Space and time are connected without acknowledging the existence of gravity, published in 1915',
+                                    'Space and gravity are connected without the acknowledgement of time, published in 1905',
+                                    'Space and time are connected without acknowledging the existence of gravity, published in 1905',
+                                  ],
+                                  initialValue: AppData.quizOneAnswers[
+                                      'What does the General Relativity theory argue?'],
+                                ),
+                                const SizedBox(height: 20),
+                                MultipleChoiceQuestion(
+                                  name:
+                                      'What did Einstein discover through his experiments and equations?',
+                                  choices: const [
+                                    'Miniscule objects caused a distortion in space-time',
+                                    'Medium objected caused a distortion in space-time',
+                                    'Massive objects caused a distortion in space-time',
+                                    'All of the above',
+                                  ],
+                                  initialValue: AppData.quizOneAnswers[
+                                      'What did Einstein discover through his experiments and equations?'],
+                                ),
+                                const SizedBox(height: 20),
+                                MultipleChoiceQuestion(
+                                  name:
+                                      'Who uses the method of gravitational lensing to study stars and galaxies behind massive objects, such as the black hole?',
+                                  choices: const [
+                                    'Astronomers',
+                                    'Physicists',
+                                    'Astrologists',
+                                    'Biologists',
+                                  ],
+                                  initialValue: AppData.quizOneAnswers[
+                                      'Who uses the method of gravitational lensing to study stars and galaxies behind massive objects, such as the black hole?'],
+                                ),
+                                const SizedBox(height: 20),
+                                MultipleChoiceQuestion(
+                                  name:
+                                      'When did NASA launch the Gravity Prove-B (GP-B), a satellite that helped prove Einstein’s theory?',
+                                  choices: const [
+                                    '1998',
+                                    '2000',
+                                    '2004',
+                                    '2014',
+                                  ],
+                                  initialValue: AppData.quizOneAnswers[
+                                      'When did NASA launch the Gravity Prove-B (GP-B), a satellite that helped prove Einstein’s theory?'],
+                                ),
+                                const SizedBox(height: 20),
+                                MultipleChoiceQuestion(
+                                  name:
+                                      'What were Robert Pound and Glen Rebka’s findings of Gamma-rays?',
+                                  choices: const [
+                                    'Heavily changed frequency due to distortions caused by distance',
+                                    'Slightly changed frequency due to distortions caused by distance',
+                                    'Heavily changed frequency due to distortions caused by gravity',
+                                    'Slightly changed frequency due to distortions caused by gravity',
+                                  ],
+                                  initialValue: AppData.quizOneAnswers[
+                                      'What were Robert Pound and Glen Rebka’s findings of Gamma-rays?'],
+                                ),
+                                const SizedBox(height: 25),
+                              ],
+                            ),
+                          ),
+                          ElevatedButton(
+                              child: const Text('Submit'),
+                              onPressed: () async {
+                                if (_formKey.currentState!.saveAndValidate()) {
+                                  var value = _formKey.currentState!.value;
+
+                                  AppData.quizOneAnswers = value;
+
+                                  var prefs =
+                                      await SharedPreferences.getInstance();
+                                  String encodedMap = json.encode(value);
+                                  await prefs.setString(
+                                      'quizOneAnswers', encodedMap);
+
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          SecondText(uid: widget.uid),
+                                    ),
+                                  );
+                                }
+                              }),
+                          const SizedBox(height: 25),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const ExitExperiment(),
+              ],
+            );
+          }),
     );
   }
 }
