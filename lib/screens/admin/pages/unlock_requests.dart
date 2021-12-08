@@ -7,63 +7,65 @@ import 'package:reading_experiment/services/database.dart';
 import 'package:reading_experiment/shared/unlock_request_data.dart';
 
 class UnlockRequests extends StatelessWidget {
-  final void Function() navigateToUnlockRequest;
-  const UnlockRequests({Key? key, required this.navigateToUnlockRequest})
-      : super(key: key);
+  // final void Function() navigateToUnlockRequest;
+  const UnlockRequests({
+    Key? key,
+    // required this.navigateToUnlockRequest,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var stream =
         DatabaseService(uid: AuthService().getUser()!.uid).unlockRequests;
 
-    stream.listen((data) {
-      late FToast fToast;
-      fToast = FToast();
-      fToast.init(context);
+    // stream.listen((data) {
+    //   late FToast fToast;
+    //   fToast = FToast();
+    //   fToast.init(context);
 
-      Widget toast = Container(
-        padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
-          color: Colors.grey[850],
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.7),
-              blurRadius: 10,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              'Unlock Requests updated.',
-              style: TextStyle(color: Colors.white),
-            ),
-            const SizedBox(width: 15),
-            TextButton(
-              child: const Text('Show'),
-              onPressed: () {
-                navigateToUnlockRequest();
-                fToast.removeCustomToast();
-              },
-            ),
-            const SizedBox(width: 5),
-            TextButton(
-              child: const Text('Ok'),
-              onPressed: () => fToast.removeCustomToast(),
-            ),
-          ],
-        ),
-      );
+    //   Widget toast = Container(
+    //     padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+    //     decoration: BoxDecoration(
+    //       borderRadius: BorderRadius.circular(10.0),
+    //       color: Colors.grey[850],
+    //       boxShadow: [
+    //         BoxShadow(
+    //           color: Colors.black.withOpacity(0.7),
+    //           blurRadius: 10,
+    //           offset: const Offset(0, 3),
+    //         ),
+    //       ],
+    //     ),
+    //     child: Row(
+    //       mainAxisSize: MainAxisSize.min,
+    //       children: [
+    //         const Text(
+    //           'Unlock Requests updated.',
+    //           style: TextStyle(color: Colors.white),
+    //         ),
+    //         const SizedBox(width: 15),
+    //         TextButton(
+    //           child: const Text('Show'),
+    //           onPressed: () {
+    //             navigateToUnlockRequest();
+    //             fToast.removeCustomToast();
+    //           },
+    //         ),
+    //         const SizedBox(width: 5),
+    //         TextButton(
+    //           child: const Text('Ok'),
+    //           onPressed: () => fToast.removeCustomToast(),
+    //         ),
+    //       ],
+    //     ),
+    //   );
 
-      fToast.showToast(
-        child: toast,
-        gravity: ToastGravity.TOP,
-        toastDuration: const Duration(days: 1),
-      );
-    });
+    //   fToast.showToast(
+    //     child: toast,
+    //     gravity: ToastGravity.TOP,
+    //     toastDuration: const Duration(days: 1),
+    //   );
+    // });
 
     return Scaffold(
       backgroundColor: Colors.transparent,

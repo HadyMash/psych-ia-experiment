@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:reading_experiment/main.dart';
 import 'package:reading_experiment/services/auth.dart';
 import 'package:reading_experiment/services/database.dart';
+import 'package:reading_experiment/shared/answers.dart';
 import 'package:reading_experiment/shared/data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -79,6 +80,10 @@ class _ExitExperimentState extends State<ExitExperiment> {
                               var instance =
                                   await SharedPreferences.getInstance();
                               instance.remove('experimentAppBarProgress');
+                              Answers.quizOneAnswers.clear();
+                              instance.remove('quizOneAnswers');
+                              Answers.quizTwoAnswers.clear();
+                              instance.remove('quizTwoAnswers');
 
                               // remove user consent
                               dynamic consentResult =

@@ -15,13 +15,14 @@ class DatabaseService {
 
   final CollectionReference consentCollection =
       FirebaseFirestore.instance.collection('participantConsent');
-
   final CollectionReference sessionCollection =
       FirebaseFirestore.instance.collection('sessions');
   final CollectionReference notesCollection =
       FirebaseFirestore.instance.collection('notes');
   final CollectionReference unlockRequestsCollection =
       FirebaseFirestore.instance.collection('unlockRequests');
+  final CollectionReference answerCollection =
+      FirebaseFirestore.instance.collection('answers');
 
   // * Participant
 

@@ -54,10 +54,10 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         navigatorKey: AppData.mainNavKey,
         home: const Home(),
-        supportedLocales: [
+        supportedLocales: const [
           Locale('en'),
         ],
-        localizationsDelegates: [
+        localizationsDelegates: const [
           FormBuilderLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,

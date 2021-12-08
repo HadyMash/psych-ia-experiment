@@ -5,9 +5,11 @@ import 'package:reading_experiment/services/database.dart';
 import 'package:reading_experiment/shared/text_data.dart';
 
 class EditTexts extends StatefulWidget {
-  final void Function() navigateToEditTexts;
-  const EditTexts({Key? key, required this.navigateToEditTexts})
-      : super(key: key);
+  // final void Function() navigateToEditTexts;
+  const EditTexts({
+    Key? key,
+    // required this.navigateToEditTexts,
+  }) : super(key: key);
 
   @override
   _EditTextsState createState() => _EditTextsState();
@@ -45,77 +47,77 @@ class _EditTextsState extends State<EditTexts> {
       }
     });
 
-    textService.textUpdates.listen((textData) {
-      print('updated');
-      if (!_gettingTexts) {
-        if (_controllersInitialised) {
-          print('showing toast');
-          late FToast fToast;
-          fToast = FToast();
-          fToast.init(context);
+    // textService.textUpdates.listen((textData) {
+    //   print('updated');
+    //   if (!_gettingTexts) {
+    //     if (_controllersInitialised) {
+    //       print('showing toast');
+    //       late FToast fToast;
+    //       fToast = FToast();
+    //       fToast.init(context);
 
-          Widget toast = Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0),
-              color: Colors.grey[850],
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.7),
-                  blurRadius: 10,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'The texts have been updated.',
-                  style: TextStyle(color: Colors.white),
-                ),
-                const SizedBox(width: 15),
-                TextButton(
-                    child: const Text('Show'),
-                    onPressed: () {
-                      InfoService()
-                          .getTexts(
-                        context,
-                        setFetching: _setFetching,
-                        setNotFetching: _setNotFetching,
-                      )
-                          .then(
-                        (textData) {
-                          setState(() {
-                            if (textData != null) {
-                              textOneController.text = textData.firstText;
-                              textTwoController.text = textData.secondText;
-                              fToast.removeCustomToast();
-                            }
-                          });
-                        },
-                      );
+    //       Widget toast = Container(
+    //         padding:
+    //             const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+    //         decoration: BoxDecoration(
+    //           borderRadius: BorderRadius.circular(10.0),
+    //           color: Colors.grey[850],
+    //           boxShadow: [
+    //             BoxShadow(
+    //               color: Colors.black.withOpacity(0.7),
+    //               blurRadius: 10,
+    //               offset: const Offset(0, 3),
+    //             ),
+    //           ],
+    //         ),
+    //         child: Row(
+    //           mainAxisSize: MainAxisSize.min,
+    //           children: [
+    //             const Text(
+    //               'The texts have been updated.',
+    //               style: TextStyle(color: Colors.white),
+    //             ),
+    //             const SizedBox(width: 15),
+    //             TextButton(
+    //                 child: const Text('Show'),
+    //                 onPressed: () {
+    //                   InfoService()
+    //                       .getTexts(
+    //                     context,
+    //                     setFetching: _setFetching,
+    //                     setNotFetching: _setNotFetching,
+    //                   )
+    //                       .then(
+    //                     (textData) {
+    //                       setState(() {
+    //                         if (textData != null) {
+    //                           textOneController.text = textData.firstText;
+    //                           textTwoController.text = textData.secondText;
+    //                           fToast.removeCustomToast();
+    //                         }
+    //                       });
+    //                     },
+    //                   );
 
-                      widget.navigateToEditTexts();
-                    }),
-                const SizedBox(width: 5),
-                TextButton(
-                  child: const Text('Ok'),
-                  onPressed: () => fToast.removeCustomToast(),
-                ),
-              ],
-            ),
-          );
+    //                   widget.navigateToEditTexts();
+    //                 }),
+    //             const SizedBox(width: 5),
+    //             TextButton(
+    //               child: const Text('Ok'),
+    //               onPressed: () => fToast.removeCustomToast(),
+    //             ),
+    //           ],
+    //         ),
+    //       );
 
-          fToast.showToast(
-            child: toast,
-            gravity: ToastGravity.TOP,
-            toastDuration: const Duration(days: 1),
-          );
-        }
-      }
-    });
+    //       fToast.showToast(
+    //         child: toast,
+    //         gravity: ToastGravity.TOP,
+    //         toastDuration: const Duration(days: 1),
+    //       );
+    //     }
+    //   }
+    // });
   }
 
   @override
@@ -194,6 +196,7 @@ class _EditTextsState extends State<EditTexts> {
                                           unselectedLabelColor: Colors.grey,
                                           indicatorColor: Colors.blue,
                                           indicatorWeight: 4,
+                                          isScrollable: false,
                                           tabs: [
                                             Tab(
                                               child: Text('Edit'),
@@ -210,6 +213,8 @@ class _EditTextsState extends State<EditTexts> {
                                           children: [
                                             TextFormField(
                                               controller: textOneController,
+                                              scrollController:
+                                                  ScrollController(),
                                               onChanged: (val) =>
                                                   setState(() {}),
                                               onFieldSubmitted: (val) =>
@@ -241,6 +246,7 @@ class _EditTextsState extends State<EditTexts> {
                                             Markdown(
                                               data: textOneController.text,
                                               selectable: true,
+                                              controller: ScrollController(),
                                               styleSheet: MarkdownStyleSheet(
                                                 p: const TextStyle(
                                                   height: 1.5,
@@ -274,6 +280,7 @@ class _EditTextsState extends State<EditTexts> {
                                           unselectedLabelColor: Colors.grey,
                                           indicatorColor: Colors.blue,
                                           indicatorWeight: 4,
+                                          isScrollable: false,
                                           tabs: [
                                             Tab(
                                               child: Text('Edit'),
@@ -290,6 +297,8 @@ class _EditTextsState extends State<EditTexts> {
                                           children: [
                                             TextFormField(
                                               controller: textTwoController,
+                                              scrollController:
+                                                  ScrollController(),
                                               onChanged: (val) =>
                                                   setState(() {}),
                                               onFieldSubmitted: (val) =>
@@ -321,6 +330,7 @@ class _EditTextsState extends State<EditTexts> {
                                             Markdown(
                                               data: textTwoController.text,
                                               selectable: true,
+                                              controller: ScrollController(),
                                               styleSheet: MarkdownStyleSheet(
                                                 p: const TextStyle(
                                                   height: 1.5,

@@ -32,20 +32,20 @@ class _AdminPanelState extends State<AdminPanel> {
             Expanded(
               child: IndexedStack(
                 index: index,
-                children: [
-                  const Dashboard(),
-                  const Participants(),
+                children: const [
+                  Dashboard(),
+                  Participants(),
                   UnlockRequests(
-                    navigateToUnlockRequest: () {
-                      setState(() => index = 2);
-                    },
-                  ),
+                      // navigateToUnlockRequest: () {
+                      //   setState(() => index = 2);
+                      // },
+                      ),
                   EditTexts(
-                    navigateToEditTexts: () {
-                      setState(() => index = 3);
-                    },
-                  ),
-                  const Discovery(),
+                      // navigateToEditTexts: () {
+                      //   setState(() => index = 3);
+                      // },
+                      ),
+                  Discovery(),
                   // Notes(),
                 ],
               ),
