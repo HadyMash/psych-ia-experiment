@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:form_builder_validators/localization/l10n.dart';
 import 'package:provider/provider.dart';
 import 'package:reading_experiment/screens/admin/admin_login.dart';
 import 'package:reading_experiment/screens/admin/admin_panel.dart';
@@ -52,6 +54,14 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         navigatorKey: AppData.mainNavKey,
         home: const Home(),
+        supportedLocales: [
+          Locale('en'),
+        ],
+        localizationsDelegates: [
+          FormBuilderLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
       ),
     );
   }
