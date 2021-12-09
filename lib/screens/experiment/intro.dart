@@ -398,7 +398,7 @@ class _AreYouReadyState extends State<AreYouReady> {
                   ),
                   const SizedBox(height: 20),
                   const Text(
-                    'Please select the group assigned to you below.\nOnce you press \'Start\' the experiment will begin. You will not be able to pause once started. The experiment should take about 20 minutes. You will have 5 minutes for each text and as long as you\'d like to answer each quiz. Good luck!',
+                    'Please select the group assigned to you below.\nOnce you press \'Start\' the experiment will begin. You will not be able to pause once started. The experiment should take about 20 minutes. You will have 5 minutes for the first text, 3 minutes for the second and as long as you\'d like to answer each quiz. Good luck!',
                     style: TextStyle(height: 1.5),
                     textAlign: TextAlign.left,
                   ),
