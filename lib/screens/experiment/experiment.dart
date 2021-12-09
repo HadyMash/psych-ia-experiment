@@ -589,7 +589,7 @@ class _SecondTextState extends State<SecondText> {
         key: _experimentAppBarKey,
         title: 'Second Text',
         uid: widget.uid,
-        duration: const Duration(seconds: 300), // 5 minutes
+        duration: const Duration(seconds: 180), // 3 minutes
         onTimeFinish: () {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
